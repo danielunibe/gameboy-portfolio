@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none">
+  <defs>
+    <linearGradient id="archive" x1="18" y1="20" x2="459" y2="309" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eee5ee"/>
+      <stop offset="1" stop-color="#c9b7d6"/>
+    </linearGradient>
+    <pattern id="paper-lines" width="1" height="16" patternUnits="userSpaceOnUse">
+      <path d="M0 15.5h480" stroke="#766183" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+  <rect width="480" height="320" fill="url(#archive)"/>
+  <rect width="480" height="320" fill="url(#paper-lines)"/>
+  <path d="M104 47v226" stroke="#77618a" stroke-opacity=".57" stroke-width="5" stroke-linecap="round"/>
+  <path d="M104 76h51m-51 87h51m-51 87h51" stroke="#77618a" stroke-opacity=".48" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="104" cy="76" r="15" fill="#f8f1e5" stroke="#886d9c" stroke-width="6"/>
+  <circle cx="104" cy="163" r="15" fill="#f8f1e5" stroke="#886d9c" stroke-width="6"/>
+  <circle cx="104" cy="250" r="15" fill="#f8f1e5" stroke="#886d9c" stroke-width="6"/>
+  <rect x="155" y="48" width="247" height="58" rx="13" fill="#faf6ed" fill-opacity=".88"/>
+  <rect x="155" y="135" width="247" height="58" rx="13" fill="#faf6ed" fill-opacity=".88"/>
+  <rect x="155" y="222" width="247" height="58" rx="13" fill="#faf6ed" fill-opacity=".88"/>
+  <path d="M177 66h76M177 82h139" stroke="#7d658e" stroke-opacity=".64" stroke-width="6" stroke-linecap="round"/>
+  <path d="M177 153h114M177 169h80" stroke="#7d658e" stroke-opacity=".64" stroke-width="6" stroke-linecap="round"/>
+  <path d="M177 240h91M177 256h125" stroke="#7d658e" stroke-opacity=".64" stroke-width="6" stroke-linecap="round"/>
+  <path d="M364 67h18v20h-18zM346 154h36v18h-36zM356 240h26v20h-26z" fill="#b9a0c9"/>
+  <circle cx="435" cy="55" r="8" fill="#8c70a1" fill-opacity=".6"/>
+  <circle cx="67" cy="276" r="5" fill="#8c70a1" fill-opacity=".38"/>
+</svg>

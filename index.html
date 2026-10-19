@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#e6e4d9">
+    <meta name="description" content="Portafolio interactivo de Daniel Unibe: diseño de producto, proyectos, experiencia y método de trabajo.">
+    <title>Daniel Unibe — Product Designer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="ui-layer">
+        <button id="return-btn" type="button" data-control="eject" aria-label="Expulsar cartucho y volver al inicio" disabled>
+            <span class="eject-icon" aria-hidden="true">↑</span> EJECT / INICIO
+        </button>
+    </div>
+
+    <main class="world-container" id="world">
+        <div class="center-stage">
+            <div class="cartridge-puck-container" id="animPuck" aria-hidden="true">
+                <div class="cartridge cart-bone" id="activeCartridgeVisual">
+                    <div class="sticker" id="activeStickerVisual"></div>
+                </div>
+            </div>
+
+            <section class="console-body" aria-label="Consola portátil interactiva">
+                <div class="screen-bezel-wide">
+                    <div class="lcd-panel-wide">
+                        <canvas id="bootCanvas" aria-hidden="true"></canvas>
+                        <section id="project-viewport" aria-label="Pantalla interactiva del portafolio" tabindex="-1"></section>
+                        <div class="screen-glare" aria-hidden="true"></div>
+                    </div>
+
+                    <div class="bezel-logo" aria-label="Game Boy Color">
+                        GAME BOY <span class="color-word" aria-hidden="true"><span class="c">C</span><span class="o">O</span><span class="l">L</span><span class="o2">O</span><span class="r">R</span></span>
+                    </div>
+                </div>
+
+                <div class="controls-tight-group" aria-label="Controles de navegación">
+                    <div class="dpad-well">
+                        <div class="dpad">
+                            <svg class="dpad-art" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                                <defs>
+                                    <linearGradient id="dpad-face" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0" stop-color="#3a3d3b"/>
+                                        <stop offset="0.52" stop-color="#292b2a"/>
+                                        <stop offset="1" stop-color="#202221"/>
+                                    </linearGradient>
+                                    <linearGradient id="dpad-bevel" x1="0" y1="0" x2="0.9" y2="1">
+                                        <stop offset="0" stop-color="#fff" stop-opacity="0.34"/>
+                                        <stop offset="0.42" stop-color="#fff" stop-opacity="0.08"/>
+                                        <stop offset="1" stop-color="#090a0a" stop-opacity="0.42"/>
+                                    </linearGradient>
+                                    <radialGradient id="dpad-center" cx="38%" cy="30%" r="80%">
+                                        <stop offset="0" stop-color="#fff" stop-opacity="0.08"/>
+                                        <stop offset="0.55" stop-color="#090a0a" stop-opacity="0.02"/>
+                                        <stop offset="1" stop-color="#090a0a" stop-opacity="0.18"/>
+                                    </radialGradient>
+                                </defs>
+                                <path class="dpad-face" d="M39 2 Q34 2 34 7 V27 Q34 34 27 34 H7 Q2 34 2 39 V61 Q2 66 7 66 H27 Q34 66 34 73 V93 Q34 98 39 98 H61 Q66 98 66 93 V73 Q66 66 73 66 H93 Q98 66 98 61 V39 Q98 34 93 34 H73 Q66 34 66 27 V7 Q66 2 61 2 Z" fill="url(#dpad-face)" stroke="#171918" stroke-width="1.5" stroke-linejoin="round"/>
+                                <path d="M39 4 Q36 4 36 8 V27 Q36 35 28 36 H8 Q4 36 4 40" fill="none" stroke="url(#dpad-bevel)" stroke-width="1.25" stroke-linecap="round"/>
+                                <g class="dpad-arrows" fill="#171918" stroke="#69706b" stroke-opacity="0.48" stroke-width="1" stroke-linejoin="round">
+                                    <path d="M50 11 57 21H43Z"/>
+                                    <path d="M50 89 43 79H57Z"/>
+                                    <path d="M11 50 21 43V57Z"/>
+                                    <path d="M89 50 79 57V43Z"/>
+                                </g>
+                                <circle cx="50" cy="50" r="13" fill="url(#dpad-center)"/>
+                            </svg>
+                            <button class="dpad-hit-area dpad-up" type="button" data-control="up" aria-label="Mover arriba"></button>
+                            <button class="dpad-hit-area dpad-down" type="button" data-control="down" aria-label="Mover abajo"></button>
+                            <button class="dpad-hit-area dpad-left" type="button" data-control="left" aria-label="Mover a la izquierda"></button>
+                            <button class="dpad-hit-area dpad-right" type="button" data-control="right" aria-label="Mover a la derecha"></button>
+                        </div>
+                    </div>
+
+                    <div class="ab-wells">
+                        <div class="btn-socket"><button class="action-btn btn-b" type="button" data-control="back" aria-label="Botón B, volver">B</button></div>
+                        <div class="btn-socket"><button class="action-btn btn-a" type="button" data-control="confirm" aria-label="Botón A, abrir o confirmar">A</button></div>
+                    </div>
+                </div>
+
+                <div class="start-select-bar">
+                    <div class="small-control">
+                        <button class="pill select" type="button" data-control="select" aria-label="SELECT, alternar resumen y evidencia"></button>
+                        <span class="printed-control-label" aria-hidden="true">SELECT</span>
+                    </div>
+                    <div class="small-control">
+                        <button class="pill start" type="button" data-control="start" aria-label="START, volver al menú"></button>
+                        <span class="printed-control-label" aria-hidden="true">START</span>
+                    </div>
+                </div>
+                <div class="speaker-grille" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </section>
+        </div>
+
+        <div class="cartridge-racks" id="cartridge-racks" role="group" aria-label="Memorias SD del portafolio">
+            <div class="cart-rack left-rack" id="rack-left" role="group" aria-label="Perfil y trabajo"></div>
+            <div class="cart-rack right-rack" id="rack-right" role="group" aria-label="Experiencia y metodología"></div>
+        </div>
+
+        <nav class="social-links" id="social-links" aria-label="Perfiles y portafolios profesionales"></nav>
+    </main>
+
+    <p class="sr-only" id="screen-announcer" aria-live="polite"></p>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

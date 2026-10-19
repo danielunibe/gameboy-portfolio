@@ -1,0 +1,9 @@
+# Evidencia local de revisión visual
+.qa/
+
+# Material editorial de trabajo y una imagen de perfil que no usa la web.
+/PLAN_CONTENIDO_SD_CV_V7_2.md
+/assets/profile/daniel-voxel-profile.png
+node_modules/
+.env
+.env.*

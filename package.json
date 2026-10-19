@@ -1,0 +1,15 @@
+{
+  "name": "gameboy-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Entorno local de portfolio con consola y cartuchos interactivos.",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.mjs",
+    "start": "node server.mjs",
+    "check": "node --check script.js && node --check projects.js && node --check server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
