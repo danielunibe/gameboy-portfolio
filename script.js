@@ -435,6 +435,7 @@ function triggerInsertion(id) {
     playInsert();
     isInserted = true;
     document.body.dataset.theme = cartridge.theme;
+    document.documentElement.dataset.theme = cartridge.theme;
     currentCartId = cartridge.id;
     selectedCartId = cartridge.id;
     screenState = { view: 'menu', itemIndex: 0, detailMode: 'summary' };
@@ -570,6 +571,7 @@ async function triggerEjection() {
     viewport.classList.remove('active');
     document.body.classList.remove('interface-active');
     delete document.body.dataset.theme;
+    delete document.documentElement.dataset.theme;
     isInserted = false;
     currentCartId = null;
     screenState = { view: 'home', itemIndex: 0, detailMode: 'summary' };

@@ -1,6 +1,7 @@
 /* --- VARIABLES --- */
 :root {
     --github-canvas: #0d1117;
+    --page-canvas: var(--github-canvas);
     --page-glow: rgba(56, 98, 165, .2);
     --bone-light: #f4f3ed;
     --bone-base: #e6e4d9;
@@ -25,7 +26,7 @@
 body {
     margin: 0; height: 100vh; width: 100vw;
     display: flex; justify-content: center; align-items: center;
-    background-color: var(--github-canvas);
+    background-color: var(--page-canvas);
     background-image: radial-gradient(ellipse at 50% 48%, var(--page-glow), transparent 68%);
     background-attachment: fixed;
     font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -276,7 +277,7 @@ body.interface-active #return-btn { opacity: 1; transform: translateY(0); pointe
 .visit-btn:hover { transform: scale(1.05); background: #333; }
 
 /* --- PORTAFOLIO INTERACTIVO: CUATRO MEMORIAS Y UNA LCD NAVEGABLE --- */
-html { min-width: 280px; min-height: 100%; background-color: var(--github-canvas); }
+html { min-width: 280px; min-height: 100%; background-color: var(--page-canvas); transition: background-color .55s ease; }
 body { width: 100%; height: 100vh; height: 100svh; overflow: hidden; }
 .world-container {
     grid-template-columns: minmax(0, 1fr);
@@ -1107,11 +1108,11 @@ body.interface-active #return-btn { left: 50%; transform: translate(-50%, 0); }
 .screen-menu::before,
 .screen-detail::before { display: none; }
 
-/* El exterior se funde con GitHub y toma un brillo mate del cartucho insertado. */
-body[data-theme="profile"] { --page-glow: rgba(237, 101, 86, .26); }
-body[data-theme="work"] { --page-glow: rgba(10, 137, 152, .28); }
-body[data-theme="experience"] { --page-glow: rgba(112, 72, 189, .27); }
-body[data-theme="method"] { --page-glow: rgba(24, 132, 59, .25); }
+/* Solo cambia el lienzo exterior al cartucho; la consola conserva sus colores propios. */
+html[data-theme="profile"], body[data-theme="profile"] { --page-canvas: #1b1114; --page-glow: rgba(237, 101, 86, .22); }
+html[data-theme="work"], body[data-theme="work"] { --page-canvas: #0d191c; --page-glow: rgba(10, 137, 152, .24); }
+html[data-theme="experience"], body[data-theme="experience"] { --page-canvas: #15101d; --page-glow: rgba(112, 72, 189, .23); }
+html[data-theme="method"], body[data-theme="method"] { --page-canvas: #11180f; --page-glow: rgba(73, 132, 53, .22); }
 
 /* Los botones A/B tienen volumen de goma con sombras hacia dentro, sin proyectarlas en la carcasa. */
 .action-btn {
