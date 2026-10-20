@@ -1,5 +1,5 @@
-import { cartridges, socialLinks } from './projects.js';
-import { englishCartridges, uiCopy } from './translations.js';
+import { cartridges, socialLinks } from './projects.js?v=20261020-screen-library';
+import { englishCartridges, uiCopy } from './translations.js?v=20261020-screen-library';
 import {
     animateCartridgeDeparture,
     animateCartridgeEjection,
@@ -190,66 +190,119 @@ function renderHome() {
     `;
 }
 
+function screenIcon(name, className = '') {
+    const paths = {
+        spark: '<path d="m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7Z"/>',
+        cursor: '<path d="m5 3 14 10-7 1-3 7Z"/><path d="m12 14 5 6"/>',
+        book: '<path d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14"/>',
+        phone: '<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10 6h4m-3 12h2"/>',
+        desktop: '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/>',
+        grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7m-3.5-3.5v7"/>',
+        layers: '<path d="m12 3 10 5-10 5L2 8Zm-10 9 10 5 10-5M2 16l10 5 10-5"/>',
+        building: '<path d="m3 8 9-5 9 5H3Zm0 13h18M5 11v7m7-7v7m7-7v7"/>',
+        health: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z"/>',
+        search: '<circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/>',
+        target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 8-8"/>',
+        flow: '<rect x="8" y="2" width="8" height="6" rx="1.5"/><rect x="1" y="16" width="8" height="6" rx="1.5"/><rect x="15" y="16" width="8" height="6" rx="1.5"/><path d="M12 8v4M5 16v-4h14v4"/>',
+        loop: '<path d="M20 8a8 8 0 0 0-14-3L3 8m0-5v5h5m-4 8a8 8 0 0 0 14 3l3-3m0 5v-5h-5"/>',
+        left: '<path d="m14 6-6 6 6 6"/>',
+        right: '<path d="m10 6 6 6-6 6"/>',
+        arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>'
+    };
+    return `<svg class="screen-icon ${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.grid}</svg>`;
+}
+
+function entryTitle(item) {
+    return item.title.replace(/^\d+\s*·\s*/, '');
+}
+
+function renderMenuPreview(cartridge, item, index) {
+    return `
+        <span class="preview-emblem" aria-hidden="true">${screenIcon(item.icon)}</span>
+        <div class="preview-copy">
+            <p class="preview-tag">${escapeHTML(item.period || item.tag || cartridge.label)}</p>
+            <h2>${escapeHTML(item.previewTitle || entryTitle(item))}</h2>
+            <p class="preview-summary">${escapeHTML(item.previewSummary || item.summary)}</p>
+        </div>
+        <button class="preview-open" type="button" data-action="open-item" data-item-index="${index}"
+            aria-label="${escapeHTML(copy('openItem'))}: ${escapeHTML(item.title)}">
+            <span>${escapeHTML(copy('exploreItem'))}</span>${screenIcon('arrow')}
+        </button>`;
+}
+
 function renderMenu(cartridge) {
-    const options = cartridge.items.map((item, index) => `
-        <button class="menu-option${index === screenState.itemIndex ? ' is-selected' : ''}" type="button"
-            data-action="open-item" data-item-index="${index}" aria-current="${index === screenState.itemIndex ? 'true' : 'false'}"
-            aria-label="${escapeHTML(copy('openItem'))}: ${escapeHTML(item.title)}. ${escapeHTML(item.summary)}">
-            <span class="menu-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
-            <span class="menu-option-copy">
-                <span class="menu-option-heading">
-                    <strong>${escapeHTML(item.title)}</strong>
-                    <span class="menu-option-meta" title="${escapeHTML(item.period || item.status || '')}">${escapeHTML(item.period || item.status || '')}</span>
-                </span>
-                <small>${escapeHTML(item.summary)}</small>
-            </span>
-            <span class="menu-option-cta" aria-hidden="true">↗</span>
-        </button>
-    `).join('');
+    const options = cartridge.items.map((item, index) => {
+        const selected = index === screenState.itemIndex;
+        return `<button class="library-item${selected ? ' is-selected' : ''}" id="library-item-${index}" type="button"
+            role="tab" aria-selected="${selected}" aria-controls="selection-preview" tabindex="${selected ? '0' : '-1'}"
+            data-action="select-item" data-item-index="${index}"
+            aria-label="${escapeHTML(copy('selectItem'))}: ${escapeHTML(entryTitle(item))}">
+            ${screenIcon(item.icon)}<span>${escapeHTML(item.navTitle || entryTitle(item))}</span>
+        </button>`;
+    }).join('');
+    const item = cartridge.items[screenState.itemIndex];
 
     return `
         <div class="screen-shell screen-menu">
-            <header class="menu-heading">
-                <p class="screen-kicker">${escapeHTML(cartridge.label)}</p>
+            <header class="library-heading">
                 <h1>${escapeHTML(cartridge.title)}</h1>
-                <p>${escapeHTML(cartridge.intro || cartridge.summary)}</p>
+                <img src="${escapeHTML(cartridge.cover)}" alt="" draggable="false">
             </header>
-            <nav class="menu-list" aria-label="${escapeHTML(cartridge.menuTitle)}">${options}</nav>
-        </div>
-    `;
+            <div class="library-workspace">
+                <nav class="library-list" role="tablist" aria-orientation="vertical" aria-label="${escapeHTML(cartridge.menuTitle)}">${options}</nav>
+                <section class="library-preview" id="selection-preview" role="tabpanel" aria-labelledby="library-item-${screenState.itemIndex}">
+                    ${renderMenuPreview(cartridge, item, screenState.itemIndex)}
+                </section>
+            </div>
+        </div>`;
+}
+
+function getDetailTabs(cartridge, item) {
+    const contributionLabel = cartridge.theme === 'profile' ? 'moreDetailTab' : cartridge.theme === 'method' ? 'practiceTab' : 'contributionTab';
+    return [
+        { key: 'summary', label: copy('overviewTab') },
+        ...(item.responsibility ? [{ key: 'contribution', label: copy(contributionLabel) }] : []),
+        ...((item.evidence?.length || item.links?.length) ? [{ key: 'evidence', label: copy('evidenceTab') }] : [])
+    ];
 }
 
 function renderDetail(cartridge, item) {
-    const evidenceMode = screenState.detailMode === 'evidence';
+    const tabs = getDetailTabs(cartridge, item);
+    const mode = tabs.some((tab) => tab.key === screenState.detailMode) ? screenState.detailMode : 'summary';
+    const previous = cartridge.items[(screenState.itemIndex - 1 + cartridge.items.length) % cartridge.items.length];
+    const next = cartridge.items[(screenState.itemIndex + 1) % cartridge.items.length];
     const evidence = (item.evidence || []).map((entry) => `<li>${escapeHTML(entry)}</li>`).join('');
     const links = renderLinks(item.links || []);
-    const body = evidenceMode
-        ? `<section class="detail-panel evidence-panel"><p class="panel-label">${escapeHTML(copy('evidenceAndStatus'))}</p>${evidence ? `<ul class="evidence-list">${evidence}</ul>` : `<p>${escapeHTML(copy('evidenceFallback'))}</p>`}<p class="status-chip">${escapeHTML(item.status || copy('statusFallback'))}</p>${links ? `<div class="screen-links">${links}</div>` : ''}</section>`
-        : `<div class="detail-panels">
-                ${item.context ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('context'))}</p><p>${escapeHTML(item.context)}</p></section>` : ''}
-                ${item.responsibility ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('contribution'))}</p><p>${escapeHTML(item.responsibility)}</p></section>` : ''}
-                ${!item.context && !item.responsibility ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('journey'))}</p><p>${escapeHTML(item.status || copy('evidenceFallback'))}</p></section>` : ''}
-            </div>`;
-    const hasEvidence = (item.evidence || []).length > 0 || links.length > 0;
-    const evidenceAction = hasEvidence
-        ? `<button class="screen-text-action" type="button" data-action="toggle-evidence">${escapeHTML(evidenceMode ? copy('showSummary') : copy('exploreEvidence'))} <span aria-hidden="true">↗</span></button>`
-        : '';
+    let body;
+    if (mode === 'evidence') {
+        body = `<ul class="entry-evidence">${evidence}</ul>
+            ${links ? `<div class="entry-links">${links}</div>` : ''}`;
+    } else if (mode === 'contribution') {
+        body = `<p class="entry-lead">${escapeHTML(item.responsibility)}</p>`;
+    } else {
+        body = `${item.period ? `<p class="entry-period">${escapeHTML(item.period)}</p>` : ''}
+            <p class="entry-lead">${escapeHTML(item.summary)}</p>
+            ${item.context ? `<p class="entry-context">${escapeHTML(item.context)}</p>` : ''}`;
+    }
 
     return `
         <div class="screen-shell screen-detail">
-            <div class="detail-topline">
-                <button class="screen-back" type="button" data-action="back-menu" aria-label="${escapeHTML(copy('backToList', { label: cartridge.label }))}"><span aria-hidden="true">←</span></button>
-                <p class="screen-kicker">${escapeHTML(item.period || cartridge.label)}</p>
-                ${evidenceAction}
+            <header class="entry-heading">
+                <button class="entry-back" type="button" data-action="back-menu" aria-label="${escapeHTML(copy('backToList', { label: cartridge.label }))}">${screenIcon('left')}</button>
+                <h1 tabindex="-1">${escapeHTML(entryTitle(item))}</h1>
+                <div class="entry-pager">
+                    <button type="button" data-action="previous-item" aria-label="${escapeHTML(copy('previousItem', { title: entryTitle(previous) }))}" title="${escapeHTML(entryTitle(previous))}">${screenIcon('left')}</button>
+                    <button type="button" data-action="next-item" aria-label="${escapeHTML(copy('nextItem', { title: entryTitle(next) }))}" title="${escapeHTML(entryTitle(next))}">${screenIcon('right')}</button>
+                </div>
+            </header>
+            <div class="entry-tabs" role="tablist" aria-label="${escapeHTML(copy('detailTabs'))}">
+                ${tabs.map((tab) => `<button id="entry-tab-${tab.key}" type="button" role="tab" aria-selected="${tab.key === mode}" aria-controls="entry-panel" tabindex="${tab.key === mode ? '0' : '-1'}" data-action="detail-tab" data-detail-mode="${tab.key}">${escapeHTML(tab.label)}</button>`).join('')}
             </div>
-            <div class="detail-scroll-area">
-                <h1>${escapeHTML(item.title)}</h1>
-                <p class="detail-summary">${escapeHTML(item.summary)}</p>
-                ${body}
-                ${!evidenceMode && item.status ? `<p class="status-chip">${escapeHTML(item.status)}</p>` : ''}
-            </div>
-        </div>
-    `;
+            <section class="entry-panel-frame" id="entry-panel" role="tabpanel" aria-labelledby="entry-tab-${mode}">
+                <div class="entry-art" aria-hidden="true">${screenIcon(item.icon)}<span>${escapeHTML(item.tag || item.period || cartridge.label)}</span></div>
+                <div class="detail-scroll-area" tabindex="0"><div class="entry-content">${body}</div></div>
+            </section>
+        </div>`;
 }
 
 function renderScreen({ visible = true } = {}) {
@@ -457,20 +510,67 @@ function moveRackSelection(direction) {
     announce(copy('selected', { label: getCartridge(cartridges[nextIndex].id).label }));
 }
 
-function moveMenuSelection(direction) {
+function revealLibrarySelection(focus = false) {
+    const activeOption = viewport.querySelector(`#library-item-${screenState.itemIndex}`);
+    const list = viewport.querySelector('.library-list');
+    if (focus) activeOption?.focus({ preventScroll: true });
+    if (!activeOption || !list) return;
+    const top = activeOption.offsetTop;
+    if (top < list.scrollTop || top + activeOption.offsetHeight > list.scrollTop + list.clientHeight) {
+        list.scrollTo({ top: top - (list.clientHeight - activeOption.offsetHeight) / 2, behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
+    }
+}
+
+function selectLibraryItem(index, { focus = false } = {}) {
     const cartridge = getCartridge(currentCartId);
-    if (!isInserted || screenState.view !== 'menu' || !cartridge || !['up', 'down'].includes(direction)) return;
-    const delta = direction === 'down' ? 1 : -1;
-    screenState.itemIndex = (screenState.itemIndex + delta + cartridge.items.length) % cartridge.items.length;
-    renderScreen();
-    const activeOption = viewport.querySelector(`[data-action="open-item"][data-item-index="${screenState.itemIndex}"]`);
-    activeOption?.focus({ preventScroll: true });
-    activeOption?.scrollIntoView({ block: 'nearest' });
+    if (!isInserted || isEjecting || screenState.view !== 'menu' || !cartridge?.items[index]) return;
+    screenState.itemIndex = index;
+    viewport.querySelectorAll('[data-action="select-item"]').forEach((button) => {
+        const selected = Number(button.dataset.itemIndex) === index;
+        button.classList.toggle('is-selected', selected);
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
+    });
+    const preview = viewport.querySelector('#selection-preview');
+    if (preview) {
+        preview.setAttribute('aria-labelledby', `library-item-${index}`);
+        preview.innerHTML = renderMenuPreview(cartridge, cartridge.items[index], index);
+    }
+    revealLibrarySelection(focus);
     announce(copy('itemSelected', {
-        title: cartridge.items[screenState.itemIndex].title,
-        current: screenState.itemIndex + 1,
+        title: cartridge.items[index].title,
+        current: index + 1,
         total: cartridge.items.length
     }));
+}
+
+function moveMenuSelection(direction) {
+    const cartridge = getCartridge(currentCartId);
+    if (!isInserted || screenState.view !== 'menu' || !cartridge || !['up', 'down', 'left', 'right'].includes(direction)) return;
+    const delta = ['down', 'right'].includes(direction) ? 1 : -1;
+    selectLibraryItem((screenState.itemIndex + delta + cartridge.items.length) % cartridge.items.length, { focus: true });
+}
+
+function setDetailMode(mode, { focus = false } = {}) {
+    const cartridge = getCartridge(currentCartId);
+    const item = cartridge?.items[screenState.itemIndex];
+    if (!isInserted || isEjecting || screenState.view !== 'detail' || !item) return;
+    const tab = getDetailTabs(cartridge, item).find((entry) => entry.key === mode);
+    if (!tab) return;
+    screenState.detailMode = mode;
+    renderScreen();
+    if (focus) viewport.querySelector(`#entry-tab-${mode}`)?.focus({ preventScroll: true });
+    announce(copy('detailSection', { section: tab.label, title: entryTitle(item) }));
+}
+
+function moveDetailSection(direction) {
+    const cartridge = getCartridge(currentCartId);
+    const item = cartridge?.items[screenState.itemIndex];
+    if (!item || screenState.view !== 'detail') return;
+    const tabs = getDetailTabs(cartridge, item);
+    const index = tabs.findIndex((tab) => tab.key === screenState.detailMode);
+    const delta = direction === 'left' ? -1 : 1;
+    setDetailMode(tabs[(index + delta + tabs.length) % tabs.length].key, { focus: true });
 }
 
 function scrollDetail(direction) {
@@ -485,6 +585,7 @@ function openItem(index = screenState.itemIndex) {
     screenState = { view: 'detail', itemIndex: index, detailMode: 'summary' };
     playSelect();
     renderScreen();
+    viewport.querySelector('.entry-heading h1')?.focus({ preventScroll: true });
     announce(copy('itemOpened', { title: cartridge.items[index].title }));
 }
 
@@ -494,6 +595,7 @@ function backAction() {
         screenState.view = 'menu';
         screenState.detailMode = 'summary';
         renderScreen();
+        revealLibrarySelection(true);
         announce(copy('listOpened'));
         return;
     }
@@ -516,6 +618,7 @@ function startAction() {
         screenState.view = 'menu';
         screenState.detailMode = 'summary';
         renderScreen();
+        revealLibrarySelection(true);
         announce(copy('listOpened'));
         return;
     }
@@ -533,13 +636,11 @@ function startAction() {
 function selectAction() {
     const cartridge = getCartridge(currentCartId);
     const item = cartridge?.items[screenState.itemIndex];
-    if (!item || screenState.view !== 'detail' || !(item.evidence?.length || item.links?.length)) {
+    if (!item || screenState.view !== 'detail' || getDetailTabs(cartridge, item).length < 2) {
         announce(copy('noAlternative'));
         return;
     }
-    screenState.detailMode = screenState.detailMode === 'summary' ? 'evidence' : 'summary';
-    renderScreen();
-    announce(screenState.detailMode === 'evidence' ? copy('evidenceView') : copy('summaryView'));
+    moveDetailSection('right');
 }
 
 function confirmAction() {
@@ -615,6 +716,8 @@ function handleControl(control) {
         case 'left':
         case 'right':
             if (!isInserted) moveRackSelection(control);
+            else if (screenState.view === 'menu') moveMenuSelection(control);
+            else if (screenState.view === 'detail') moveDetailSection(control);
             break;
         case 'up':
         case 'down':
@@ -673,11 +776,24 @@ document.addEventListener('click', (event) => {
         case 'open-item':
             openItem(Number(action.dataset.itemIndex));
             break;
+        case 'select-item':
+            playSelect();
+            selectLibraryItem(Number(action.dataset.itemIndex), { focus: true });
+            break;
+        case 'detail-tab':
+            playSelect();
+            setDetailMode(action.dataset.detailMode, { focus: true });
+            break;
+        case 'previous-item':
+        case 'next-item': {
+            const cartridge = getCartridge(currentCartId);
+            if (!cartridge) break;
+            const delta = action.dataset.action === 'previous-item' ? -1 : 1;
+            openItem((screenState.itemIndex + delta + cartridge.items.length) % cartridge.items.length);
+            break;
+        }
         case 'back-menu':
-            if (isEjecting || !isInserted) break;
-            screenState.view = 'menu';
-            screenState.detailMode = 'summary';
-            renderScreen();
+            backAction();
             break;
         case 'toggle-evidence':
             selectAction();
@@ -710,12 +826,18 @@ document.addEventListener('keydown', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     const focusedControl = target?.closest('button, a, input, textarea, select');
 
+    if (event.key === 'Enter' && target?.closest('[data-action="select-item"]')) {
+        event.preventDefault();
+        openItem(Number(target.closest('[data-action="select-item"]').dataset.itemIndex));
+        return;
+    }
+
     if (event.key.startsWith('Arrow')) {
         event.preventDefault();
         if (!isInserted && event.key === 'ArrowLeft') moveRackSelection('left');
         else if (!isInserted && event.key === 'ArrowRight') moveRackSelection('right');
-        else if (event.key === 'ArrowUp') moveMenuSelection('up');
-        else if (event.key === 'ArrowDown') moveMenuSelection('down');
+        else if (screenState.view === 'menu') moveMenuSelection(event.key.replace('Arrow', '').toLowerCase());
+        else if (screenState.view === 'detail' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) moveDetailSection(event.key === 'ArrowLeft' ? 'left' : 'right');
         if (screenState.view === 'detail' && event.key === 'ArrowUp') scrollDetail('up');
         if (screenState.view === 'detail' && event.key === 'ArrowDown') scrollDetail('down');
         return;

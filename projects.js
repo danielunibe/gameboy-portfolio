@@ -22,6 +22,10 @@ export const cartridges = [
     items: [
       {
         title: 'Propuesta de valor',
+        navTitle: 'Mi propuesta',
+        tag: 'Product Designer · UX/UI',
+        icon: 'spark',
+        previewSummary: 'Conecto necesidades de las personas y objetivos operativos con productos claros y útiles.',
         summary: 'Conecto las necesidades de las personas con objetivos operativos para dar forma a productos digitales claros y útiles.',
         context: 'Mi trayectoria combina herramientas internas, servicios digitales de gobierno estatal, trabajo independiente y productos propios desde cero.',
         responsibility: 'Mi posición principal es Product Designer / UX/UI, con énfasis en definición de producto, sistemas de interacción y prototipado.',
@@ -30,6 +34,10 @@ export const cartridges = [
       },
       {
         title: 'Enfoque de diseño',
+        navTitle: 'Cómo diseño',
+        tag: 'Interacción y prototipado',
+        icon: 'cursor',
+        previewSummary: 'Hago visibles flujos, estados y decisiones antes de construir.',
         summary: 'Diseño para que los flujos, estados y decisiones del producto puedan entenderse antes de construirlos.',
         context: 'Trabajo con requisitos, arquitectura de información, interacción, accesibilidad y comportamiento responsivo.',
         responsibility: 'Uso Figma y prototipos funcionales; recurro a herramientas web y código cuando ayudan a comprobar el comportamiento.',
@@ -38,6 +46,10 @@ export const cartridges = [
       },
       {
         title: 'Formación y perfil',
+        navTitle: 'Formación',
+        tag: 'UNIAT · Plan concluido',
+        icon: 'book',
+        previewSummary: 'Diseño y comunicación visual aplicados a productos y sistemas digitales.',
         summary: 'Formación en diseño y comunicación visual, con interés aplicado en sistemas digitales y productos interactivos.',
         context: 'UNIAT: plan concluido; proceso de titulación en trámite.',
         responsibility: 'Español nativo; inglés técnico y audiovisual, con conversación profesional en desarrollo.',
@@ -62,6 +74,9 @@ export const cartridges = [
     items: [
       {
         title: 'Pulsaria / PulsarIA',
+        navTitle: 'Pulsaria',
+        tag: 'Público · Evaluación',
+        icon: 'spark',
         summary: 'Producto propio con repositorio público y una versión de evaluación.',
         context: 'El código permite inspeccionar el trabajo directamente desde GitHub.',
         responsibility: 'Proyecto independiente de producto y diseño.',
@@ -71,6 +86,8 @@ export const cartridges = [
       },
       {
         title: 'vivo Promotor',
+        tag: 'Privado · En uso',
+        icon: 'phone',
         summary: 'Experiencia móvil orientada al trabajo de promotores en campo.',
         context: 'La aplicación es privada y se utiliza en trabajo de campo.',
         responsibility: 'El caso se centra en UX/UI móvil y en la evolución continua de la herramienta.',
@@ -79,6 +96,8 @@ export const cartridges = [
       },
       {
         title: 'VoyagerOS',
+        tag: 'Nativo · En validación',
+        icon: 'desktop',
         summary: 'Experiencia nativa para escritorio con una versión ejecutable.',
         context: 'Proyecto en etapa de estabilización y validación.',
         responsibility: 'Prototipo de producto digital en desarrollo.',
@@ -87,6 +106,8 @@ export const cartridges = [
       },
       {
         title: 'Julia',
+        tag: 'En desarrollo',
+        icon: 'grid',
         summary: 'Prototipo de producto en desarrollo.',
         context: 'La exploración continúa; se mostrará una demo solo cuando exista una versión lista para compartir.',
         responsibility: 'Proyecto propio en etapa de prototipo.',
@@ -109,6 +130,7 @@ export const cartridges = [
     items: [
       {
         title: 'LUKTEC',
+        icon: 'layers',
         period: '2025 — agosto de 2026',
         summary: 'Diseño de flujos y herramientas digitales a partir de necesidades operativas.',
         context: 'Trabajo con necesidades de operación para estructurar soluciones y experiencias de producto.',
@@ -118,6 +140,9 @@ export const cartridges = [
       },
       {
         title: 'Secretaría de la Hacienda Pública de Jalisco',
+        navTitle: 'Hacienda Jalisco',
+        previewTitle: 'Hacienda Jalisco',
+        icon: 'building',
         period: '2021 — mayo de 2025',
         summary: 'Experiencia institucional en diseño digital, innovación interactiva y análisis de sistemas.',
         context: 'El recorrido incluye los puestos de Especialista en Diseño Digital e Innovación Interactiva y Analista de Sistemas B.',
@@ -127,6 +152,7 @@ export const cartridges = [
       },
       {
         title: 'Vitalfarma',
+        icon: 'health',
         period: '2018–2019 y 2020–2021',
         summary: 'Experiencia de servicio y operación en una franquicia de farmacia-consultorio.',
         context: 'El trabajo abarcó la experiencia de servicio y los protocolos operativos.',
@@ -151,6 +177,9 @@ export const cartridges = [
     items: [
       {
         title: '01 · Entender el contexto',
+        navTitle: 'Contexto',
+        icon: 'search',
+        previewSummary: 'Personas, necesidades, objetivos y restricciones antes de diseñar.',
         summary: 'Alinear necesidades de usuarios y operación con objetivos, restricciones y personas involucradas.',
         context: 'Antes de diseñar, identifico quién usa el producto, qué necesita resolver y qué condiciona la solución.',
         responsibility: 'Escuchar, investigar lo disponible y hacer explícitos los supuestos relevantes.',
@@ -159,6 +188,9 @@ export const cartridges = [
       },
       {
         title: '02 · Definir problema y alcance',
+        navTitle: 'Definición',
+        icon: 'target',
+        previewSummary: 'Un problema claro y un alcance que el equipo pueda discutir.',
         summary: 'Convertir hallazgos en un problema de diseño y un alcance que el equipo pueda discutir.',
         context: 'La definición ordena requisitos, flujos de trabajo y arquitectura de información.',
         responsibility: 'Separar lo que debe resolverse ahora de lo que requiere validación adicional.',
@@ -167,6 +199,9 @@ export const cartridges = [
       },
       {
         title: '03 · Diseñar reglas de interacción',
+        navTitle: 'Interacción',
+        icon: 'flow',
+        previewSummary: 'Jerarquía, estados y comportamiento del producto, más allá de las pantallas.',
         summary: 'Aclarar jerarquía, estados, casos límite, comportamiento responsivo y accesibilidad.',
         context: 'El flujo se especifica como comportamiento, no solo como una secuencia de pantallas.',
         responsibility: 'Hacer visibles las respuestas del producto y los escenarios que el diseño debe cubrir.',
@@ -175,6 +210,9 @@ export const cartridges = [
       },
       {
         title: '04 · Prototipar para probar',
+        navTitle: 'Prototipo',
+        icon: 'cursor',
+        previewSummary: 'Prototipos para revisar estructura, flujos y comportamiento.',
         summary: 'Elegir el nivel de prototipo adecuado para revisar estructura, flujo y comportamiento.',
         context: 'Figma resuelve exploraciones de interfaz; web y código permiten comprobar prototipos funcionales cuando aportan valor.',
         responsibility: 'Colaborar con Desarrollo y Operaciones para acercar el diseño a una solución implementable.',
@@ -183,6 +221,9 @@ export const cartridges = [
       },
       {
         title: '05 · Iterar con evidencia',
+        navTitle: 'Iteración',
+        icon: 'loop',
+        previewSummary: 'Evidencia disponible para tomar la siguiente decisión.',
         summary: 'Revisar el resultado con la evidencia disponible y ajustar la siguiente decisión.',
         context: 'La evidencia puede ser un artefacto, un estado verificable del producto o señales de uso cuando existen.',
         responsibility: 'Distinguir lo comprobado de lo que aún se necesita validar.',
