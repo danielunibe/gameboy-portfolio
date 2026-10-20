@@ -958,7 +958,6 @@ body.interface-active #return-btn { transform: translateY(0); }
 
 @media (min-width: 681px) {
     .world-container.zoom-active { translate: 0 clamp(155px, 24.5vh, 250px); }
-    .world-container.zoom-active .start-select-bar { position: relative; top: -42px; }
 }
 @media (max-width: 680px) {
     #return-btn { top: 9px; right: 9px; padding: 7px 10px; font-size: 8px; }
@@ -1139,3 +1138,49 @@ body.interface-active #return-btn { transform: translateY(0); }
 .screen-menu .menu-option { min-height: clamp(42px, 11cqw, 48px); padding: 6px 10px; }
 .screen-menu .menu-option-copy strong { font-size: clamp(12px, 2.8cqw, 15px); }
 .screen-menu .menu-option-copy small { font-size: clamp(9px, 2.05cqw, 11px); line-height: 1.2; -webkit-line-clamp: 1; }
+
+/* Botones de acción clásicos: tono vino/morado, letras centradas y legibles. */
+.action-btn {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+    color: #fff3e8;
+    background: linear-gradient(145deg, #91344c 0%, #76223c 58%, #5d172f 100%);
+    text-shadow: 0 1px 1px rgba(39, 7, 18, .48);
+}
+.action-label {
+    display: block;
+    transform: rotate(15deg);
+}
+.action-btn:hover,
+.action-btn:focus {
+    background: linear-gradient(145deg, #a34159 0%, #842841 58%, #681b35 100%);
+}
+.action-btn:active {
+    background: linear-gradient(145deg, #651a32, #812640);
+}
+
+/* El zoom crece con la pantalla; SELECT/START permanecen anclados al cuerpo.
+   El desplazamiento del documento deja accesible la parte inferior de la consola. */
+@media (min-width: 1080px) and (min-height: 761px) {
+    .world-container.zoom-active { --active-zoom: 1.7; }
+}
+body.interface-active {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+html,
+body { scrollbar-width: thin; scrollbar-color: rgba(112, 105, 91, .35) transparent; }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { width: 8px; }
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgba(112, 105, 91, .35);
+    background-clip: content-box;
+}
