@@ -195,7 +195,7 @@ function renderMenu(cartridge) {
     return `
         <div class="screen-shell screen-menu">
             <header class="menu-heading">
-                <p class="screen-kicker">${escapeHTML(cartridge.menuTitle)}</p>
+                <p class="screen-kicker">${escapeHTML(cartridge.label)}</p>
                 <h1>${escapeHTML(cartridge.title)}</h1>
                 <p>${escapeHTML(cartridge.intro || cartridge.summary)}</p>
             </header>

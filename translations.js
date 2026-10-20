@@ -227,7 +227,7 @@ export const englishCartridges = {
     ]
   },
   metodo: {
-    label: 'HOW I WORK',
+    label: 'METHOD',
     title: 'How I work',
     kicker: 'PRODUCT THINKING · UX/UI · PROTOTYPING',
     summary: 'I take ownership of the design problem and connect context, scope, interaction rules, and prototypes so the team can evaluate the solution.',

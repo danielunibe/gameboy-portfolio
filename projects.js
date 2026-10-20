@@ -139,7 +139,7 @@ export const cartridges = [
   {
     id: 3,
     key: 'metodo',
-    label: 'CÓMO TRABAJO',
+    label: 'MÉTODO',
     title: 'Cómo trabajo',
     kicker: 'PRODUCT THINKING · UX/UI · PROTOTIPADO',
     shell: 'lime',
