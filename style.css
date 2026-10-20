@@ -1,5 +1,7 @@
 /* --- VARIABLES --- */
 :root {
+    --github-canvas: #0d1117;
+    --page-glow: rgba(132, 148, 174, .12);
     --bone-light: #f4f3ed;
     --bone-base: #e6e4d9;
     --bone-dark: #c8c6b9;
@@ -23,10 +25,13 @@
 body {
     margin: 0; height: 100vh; width: 100vw;
     display: flex; justify-content: center; align-items: center;
-    background: transparent;
+    background-color: var(--github-canvas);
+    background-image: radial-gradient(ellipse at 50% 48%, var(--page-glow), transparent 68%);
+    background-attachment: fixed;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     overflow: hidden;
     perspective: 1500px;
+    transition: background-color .45s ease, background-image .55s ease;
 }
 
 /* UI FLOTANTE */
@@ -271,7 +276,7 @@ body.interface-active #return-btn { opacity: 1; transform: translateY(0); pointe
 .visit-btn:hover { transform: scale(1.05); background: #333; }
 
 /* --- PORTAFOLIO INTERACTIVO: CUATRO MEMORIAS Y UNA LCD NAVEGABLE --- */
-html { min-width: 280px; min-height: 100%; }
+html { min-width: 280px; min-height: 100%; background-color: var(--github-canvas); }
 body { width: 100%; height: 100vh; height: 100svh; overflow: hidden; }
 .world-container {
     grid-template-columns: minmax(0, 1fr);
@@ -518,10 +523,10 @@ body { width: 100%; height: 100vh; height: 100svh; overflow: hidden; }
 .screen-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
 .screen-link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 8px; background: var(--screen-accent); color: #fff; font-size: clamp(9px, 2cqw, 11px); font-weight: 850; transition: transform .16s ease, filter .16s ease; }
 .screen-text-action { padding: 0; background: transparent; color: var(--screen-accent); font-size: inherit; font-weight: 900; letter-spacing: inherit; text-transform: uppercase; white-space: nowrap; }
-#project-viewport[data-theme="profile"] { --screen-accent: #9b7750; }
-#project-viewport[data-theme="work"] { --screen-accent: #138a78; }
-#project-viewport[data-theme="experience"] { --screen-accent: #8065a0; }
-#project-viewport[data-theme="method"] { --screen-accent: #71844d; }
+#project-viewport[data-theme="profile"] { --screen-accent: #bd3d36; }
+#project-viewport[data-theme="work"] { --screen-accent: #087f8b; }
+#project-viewport[data-theme="experience"] { --screen-accent: #7048bd; }
+#project-viewport[data-theme="method"] { --screen-accent: #4f812f; }
 .screen-shell :focus-visible, .screen-link:focus-visible, .screen-action:focus-visible, .screen-text-action:focus-visible, .screen-back:focus-visible {
     outline: 2px solid var(--screen-accent);
     outline-offset: 3px;
@@ -1058,14 +1063,20 @@ body.interface-active #return-btn { transform: translateY(0); }
 .cart-lime { --sticker-label-bg: #526b2b; --sticker-matte: #18843b; }
 
 /* Cada cartucho lleva el tono mate de su carcasa a la pantalla al abrirse. */
-#project-viewport[data-theme="profile"] { --screen-surface: #f2e1dc; --screen-surface-light: #fbf0ec; }
-#project-viewport[data-theme="work"] { --screen-surface: #deeee9; --screen-surface-light: #eff7f3; }
-#project-viewport[data-theme="experience"] { --screen-surface: #e9e3ef; --screen-surface-light: #f4eff7; }
-#project-viewport[data-theme="method"] { --screen-surface: #e8ecd9; --screen-surface-light: #f3f5e8; }
+#project-viewport[data-theme="profile"] { --screen-accent: #bd3d36; --screen-surface: #f8e5e1; --screen-surface-light: #fff5f1; }
+#project-viewport[data-theme="work"] { --screen-accent: #087f8b; --screen-surface: #dcf1f0; --screen-surface-light: #eef9f8; }
+#project-viewport[data-theme="experience"] { --screen-accent: #7048bd; --screen-surface: #e8e0f4; --screen-surface-light: #f4effa; }
+#project-viewport[data-theme="method"] { --screen-accent: #4f812f; --screen-surface: #e7f0dc; --screen-surface-light: #f3f8ed; }
 .screen-menu,
 .screen-detail { background: linear-gradient(145deg, var(--screen-surface-light), var(--screen-surface)); }
 .screen-menu::before,
 .screen-detail::before { display: none; }
+
+/* El exterior se funde con GitHub y toma un brillo mate del cartucho insertado. */
+body[data-theme="profile"] { --page-glow: rgba(237, 101, 86, .26); }
+body[data-theme="work"] { --page-glow: rgba(10, 137, 152, .28); }
+body[data-theme="experience"] { --page-glow: rgba(112, 72, 189, .27); }
+body[data-theme="method"] { --page-glow: rgba(24, 132, 59, .25); }
 
 /* Los botones A/B tienen volumen de goma con sombras hacia dentro, sin proyectarlas en la carcasa. */
 .action-btn {

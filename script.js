@@ -25,10 +25,10 @@ const puckSticker = document.getElementById('activeStickerVisual');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const themeColors = {
-    profile: { accent: '#bf3e36', ink: '#3a1d1c', paper: '#fff0e6' },
-    work: { accent: '#138a78', ink: '#153a36', paper: '#e9f5ee' },
-    experience: { accent: '#8065a0', ink: '#30283d', paper: '#f0eaf5' },
-    method: { accent: '#71844d', ink: '#313a2b', paper: '#eef0df' }
+    profile: { accent: '#bd3d36', ink: '#3a1d1c', paper: '#fff0e6' },
+    work: { accent: '#087f8b', ink: '#153a36', paper: '#e7f7f5' },
+    experience: { accent: '#7048bd', ink: '#30283d', paper: '#f0eaf8' },
+    method: { accent: '#4f812f', ink: '#313a2b', paper: '#eef5e4' }
 };
 
 let isInserted = false;
@@ -434,6 +434,7 @@ function triggerInsertion(id) {
 
     playInsert();
     isInserted = true;
+    document.body.dataset.theme = cartridge.theme;
     currentCartId = cartridge.id;
     selectedCartId = cartridge.id;
     screenState = { view: 'menu', itemIndex: 0, detailMode: 'summary' };
@@ -568,6 +569,7 @@ async function triggerEjection() {
     // desde la ranura mientras la consola recupera su tamaño de portada.
     viewport.classList.remove('active');
     document.body.classList.remove('interface-active');
+    delete document.body.dataset.theme;
     isInserted = false;
     currentCartId = null;
     screenState = { view: 'home', itemIndex: 0, detailMode: 'summary' };
