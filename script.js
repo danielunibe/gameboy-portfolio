@@ -374,10 +374,20 @@ function animateElement(element, frames, duration, easing = 'cubic-bezier(.2,.8,
     return element.animate(frames, { duration, easing, fill: 'forwards' }).finished.catch(() => undefined);
 }
 
+function getRackSide(rackCart) {
+    return rackCart?.closest('#rack-right') ? 'right' : 'left';
+}
+
 function animateCartridgeDeparture(rackCart) {
     const rect = rackCart.getBoundingClientRect();
     const flyingCart = createFlightClone(rackCart, rect);
-    const dropDistance = Math.ceil(rect.height * 2.15);
+    const side = getRackSide(rackCart);
+    const dir = side === 'left' ? -1 : 1;
+    // El cartucho sale de forma horizontal hacia el lado de su riel y debe
+    // superar el borde del encuadre para desaparecer de la vista.
+    const exitX = dir * (side === 'left'
+        ? rect.left + rect.width + 90
+        : window.innerWidth - rect.right + 90);
     rackCart.classList.add('hidden-in-rack');
 
     if (prefersReducedMotion.matches) {
@@ -387,8 +397,8 @@ function animateCartridgeDeparture(rackCart) {
 
     return animateElement(flyingCart, [
         { transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)', opacity: 1, offset: 0 },
-        { transform: `translate3d(0, ${Math.round(dropDistance * 0.72)}px, 0) rotate(8deg) scale(.97)`, opacity: 1, offset: 0.72 },
-        { transform: `translate3d(0, ${dropDistance}px, 0) rotate(13deg) scale(.92)`, opacity: 0, offset: 1 }
+        { transform: `translate3d(${Math.round(exitX * 0.6)}px, 10px, 0) rotate(${dir * 7}deg) scale(.97)`, opacity: 1, offset: 0.6 },
+        { transform: `translate3d(${exitX}px, 18px, 0) rotate(${dir * 13}deg) scale(.92)`, opacity: 0, offset: 1 }
     ], 620).finally(() => flyingCart.remove());
 }
 
@@ -544,9 +554,14 @@ function confirmAction() {
 
 async function animateCartridgeReturn(rackCart) {
     const target = rackCart.getBoundingClientRect();
+    const side = getRackSide(rackCart);
+    // El cartucho entra desde fuera del borde de su propio lado.
+    const startX = side === 'left'
+        ? -target.width - 28
+        : window.innerWidth + 28;
     const start = {
-        left: target.left,
-        top: -target.height - 24,
+        left: startX,
+        top: target.top,
         width: target.width,
         height: target.height
     };
@@ -555,10 +570,15 @@ async function animateCartridgeReturn(rackCart) {
         flyingCart.remove();
         return;
     }
+    // La opacidad llega a 1 pronto (al entrar en cuadro) y el último tramo
+    // es puro asentamiento de giro y escala hasta encajar en el riel.
+    const travel = target.left - startX;
+    const lean = side === 'left' ? 1 : -1;
     await animateElement(flyingCart, [
-        { transform: 'translate3d(0, 0, 0) rotate(-9deg) scale(.92)', opacity: 0 },
-        { transform: `translate3d(0, ${target.top - start.top}px, 0) rotate(0deg) scale(1)`, opacity: 1 }
-    ], 560, 'cubic-bezier(.18,.72,.28,1)');
+        { transform: `translate3d(0, 0, 0) rotate(${lean * 8}deg) scale(.9)`, opacity: 0, offset: 0 },
+        { transform: `translate3d(${Math.round(travel * 0.3)}px, 6px, 0) rotate(${lean * 4}deg) scale(.95)`, opacity: 1, offset: 0.3 },
+        { transform: `translate3d(${travel}px, 0, 0) rotate(0deg) scale(1)`, opacity: 1, offset: 1 }
+    ], 600, 'cubic-bezier(.18,.72,.28,1)');
     flyingCart.remove();
 }
 
@@ -569,32 +589,56 @@ async function triggerEjection() {
     const ejectedId = currentCartId;
     const rackCart = document.getElementById(`rack-cart-${ejectedId}`);
     const sequence = ++animationSequence;
-    if (bootFrame !== null) {
-        window.cancelAnimationFrame(bootFrame);
-        bootFrame = null;
-    }
     playEjectSound();
 
-    if (!prefersReducedMotion.matches && puckVisual.isConnected) {
-        const flyingCart = createFlightClone(puckVisual, puckVisual.getBoundingClientRect());
-        await animateElement(flyingCart, [
-            { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1 },
-            { transform: `translate3d(0, ${-window.innerHeight - 80}px, 0) scale(.86)`, opacity: 0 }
-        ], 300);
-        flyingCart.remove();
-    }
-
+    // 1) La LCD se apaga y un clon fijo (independiente del zoom del escenario)
+    // sale disparado desde la ranura hacia el lado de su riel; el puck
+    // original queda oculto para que no se vea un cartucho fantasma duplicado.
+    viewport.classList.remove('active');
     document.body.classList.remove('interface-active');
-    world.classList.remove('zoom-active');
-    animPuck.classList.remove('inserting');
-    canvas.classList.add('fade-out');
     isInserted = false;
     currentCartId = null;
     screenState = { view: 'home', itemIndex: 0, detailMode: 'summary' };
-    renderScreen();
 
-    await waitForMotion(800);
+    let exitFlight = Promise.resolve();
+    if (!prefersReducedMotion.matches && puckVisual.isConnected) {
+        // El cartucho salta fuera de la ranura y sale hacia el lado de su riel.
+        const side = getRackSide(rackCart);
+        const dir = side === 'left' ? -1 : 1;
+        const exitX = dir * (window.innerWidth + 100);
+        const flyingCart = createFlightClone(puckVisual, puckVisual.getBoundingClientRect());
+        puckVisual.style.visibility = 'hidden';
+        exitFlight = animateElement(flyingCart, [
+            { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0 },
+            { transform: `translate3d(${Math.round(exitX * 0.15)}px, -42px, 0) scale(.95)`, opacity: 1, offset: 0.3 },
+            { transform: `translate3d(${exitX}px, -10px, 0) scale(.86)`, opacity: 0, offset: 1 }
+        ], 300).finally(() => flyingCart.remove());
+    }
+
+    await exitFlight;
     if (sequence !== animationSequence) return;
+
+    // 2) El puck real vuelve a su posición de reposo sin transición (oculto,
+    // fuera de cuadro) y arranca el zoom de salida.
+    animPuck.style.transition = 'none';
+    animPuck.classList.remove('inserting');
+    void animPuck.offsetWidth;
+    animPuck.style.transition = '';
+    puckVisual.style.visibility = '';
+    world.classList.remove('zoom-active');
+    canvas.classList.add('fade-out');
+
+    // 3) Cuando el desvanecimiento de la LCD termina, se reemplaza el
+    // contenido por la portada sin que se vea (pantalla "apagada").
+    await waitForMotion(260);
+    if (sequence !== animationSequence) return;
+    renderScreen({ visible: false });
+
+    // 4) El zoom ha terminado: la portada aparece de nuevo con la consola ya
+    // en su tamaño de reposo, mientras el cartucho vuelve al riel.
+    await waitForMotion(540);
+    if (sequence !== animationSequence) return;
+    viewport.classList.add('active');
     if (rackCart && !prefersReducedMotion.matches) await animateCartridgeReturn(rackCart);
     if (sequence !== animationSequence) return;
 
@@ -669,6 +713,7 @@ document.addEventListener('click', (event) => {
             openItem(Number(action.dataset.itemIndex));
             break;
         case 'back-menu':
+            if (isEjecting || !isInserted) break;
             screenState.view = 'menu';
             screenState.detailMode = 'summary';
             renderScreen();

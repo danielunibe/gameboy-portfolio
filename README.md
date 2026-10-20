@@ -45,3 +45,10 @@ npm run check
 ```
 
 La comprobación valida sintaxis JavaScript; las memorias y miniaturas enlazadas también se revisan antes de publicar.
+
+## Despliegue en GitHub Pages
+
+1. Haz push de los cambios a la rama `main` del repositorio `danielunibe/gameboy-portfolio` (la raíz del repo debe ser la raíz del sitio: `index.html`, `style.css`, `script.js`, `projects.js`, `favicon.svg`, `assets/`).
+2. La acción `.github/workflows/pages.yml` se ejecuta automáticamente con cada push a `main`: copia los archivos estáticos a `_site` y despliega con `actions/deploy-pages`.
+3. Configuración única del repositorio: **Settings → Pages → Source: GitHub Actions**.
+4. El sitio queda publicado en https://danielunibe.github.io/gameboy-portfolio/. También puedes lanzar el workflow manualmente desde **Actions → Publish portfolio to GitHub Pages → Run workflow**.
