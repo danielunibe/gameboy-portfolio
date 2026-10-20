@@ -1,0 +1,33 @@
+:root {
+    --motion-world-zoom: 720ms;
+    --motion-puck-slide: 520ms;
+    --motion-cartridge-flight: 620ms;
+    --motion-cartridge-return: 560ms;
+    --motion-eject-flight: 480ms;
+    --motion-screen-fade: 220ms;
+    --motion-insert-stagger: 110ms;
+    --motion-boot-sequence: 640ms;
+    --motion-zoom-easing: cubic-bezier(.2, .78, .22, 1);
+    --motion-puck-easing: cubic-bezier(.2, .76, .22, 1);
+}
+
+.world-container {
+    transition: transform var(--motion-world-zoom) var(--motion-zoom-easing);
+}
+
+.world-container.zoom-active .cart-rack {
+    transition: opacity 280ms ease;
+}
+
+.cartridge-puck-container {
+    transition: top var(--motion-puck-slide) var(--motion-puck-easing);
+    will-change: top;
+}
+
+.cartridge-puck-container.motion-reset {
+    transition: none !important;
+}
+
+#project-viewport {
+    transition: opacity var(--motion-screen-fade) ease;
+}

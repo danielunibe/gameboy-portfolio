@@ -1,5 +1,13 @@
 import { cartridges, socialLinks } from './projects.js';
 import { englishCartridges, uiCopy } from './translations.js';
+import {
+    animateCartridgeDeparture,
+    animateCartridgeEjection,
+    animateCartridgeReturn,
+    getMotionDuration,
+    waitForMotion,
+    waitForTransition
+} from './animations.js';
 
 const world = document.getElementById('world');
 const rack = document.getElementById('cartridge-racks');
@@ -301,10 +309,6 @@ function announce(message) {
     window.requestAnimationFrame(() => { announcer.textContent = message; });
 }
 
-function waitForMotion(duration) {
-    return new Promise((resolve) => window.setTimeout(resolve, prefersReducedMotion.matches ? 0 : duration));
-}
-
 function drawBootScreen(cartridge, progress) {
     if (!context) return;
     const { accent, paper, ink } = themeColors[cartridge.theme] || themeColors.profile;
@@ -365,7 +369,7 @@ function runBootSequence(cartridge, sequence) {
         }
 
         const startedAt = performance.now();
-        const duration = 640;
+        const duration = getMotionDuration('--motion-boot-sequence', 640);
         const drawFrame = (now) => {
             if (sequence !== animationSequence || !isInserted) {
                 bootFrame = null;
@@ -384,72 +388,6 @@ function runBootSequence(cartridge, sequence) {
     });
 }
 
-function createFlightClone(source, rect, { opacity = '1' } = {}) {
-    const clone = source.cloneNode(true);
-    clone.removeAttribute('id');
-    clone.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
-    clone.removeAttribute('data-cartridge-id');
-    clone.setAttribute('aria-hidden', 'true');
-    clone.setAttribute('tabindex', '-1');
-    clone.classList.remove('hidden-in-rack');
-    Object.assign(clone.style, {
-        position: 'fixed',
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-        margin: '0',
-        zIndex: '150',
-        pointerEvents: 'none',
-        opacity,
-        transform: 'none'
-    });
-    document.body.appendChild(clone);
-    return clone;
-}
-
-function animateElement(element, frames, duration, easing = 'cubic-bezier(.2,.8,.25,1)') {
-    if (prefersReducedMotion.matches) return Promise.resolve();
-    if (typeof element.animate !== 'function') {
-        const finalFrame = frames[frames.length - 1] || {};
-        element.style.transition = `transform ${duration}ms ${easing}, opacity ${duration}ms ease`;
-        window.requestAnimationFrame(() => {
-            if (finalFrame.transform) element.style.transform = finalFrame.transform;
-            if (finalFrame.opacity !== undefined) element.style.opacity = String(finalFrame.opacity);
-        });
-        return waitForMotion(duration);
-    }
-    return element.animate(frames, { duration, easing, fill: 'forwards' }).finished.catch(() => undefined);
-}
-
-function getRackSide(rackCart) {
-    return rackCart?.closest('#rack-right') ? 'right' : 'left';
-}
-
-function animateCartridgeDeparture(rackCart) {
-    const rect = rackCart.getBoundingClientRect();
-    const flyingCart = createFlightClone(rackCart, rect);
-    const side = getRackSide(rackCart);
-    const dir = side === 'left' ? -1 : 1;
-    // El cartucho sale de forma horizontal hacia el lado de su riel y debe
-    // superar el borde del encuadre para desaparecer de la vista.
-    const exitX = dir * (side === 'left'
-        ? rect.left + rect.width + 90
-        : window.innerWidth - rect.right + 90);
-    rackCart.classList.add('hidden-in-rack');
-
-    if (prefersReducedMotion.matches) {
-        flyingCart.remove();
-        return Promise.resolve();
-    }
-
-    return animateElement(flyingCart, [
-        { transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)', opacity: 1, offset: 0 },
-        { transform: `translate3d(${Math.round(exitX * 0.52)}px, 5px, 0) rotate(${dir * 3}deg) scale(.99)`, opacity: 1, offset: 0.58 },
-        { transform: `translate3d(${exitX}px, 12px, 0) rotate(${dir * 7}deg) scale(.96)`, opacity: 0, offset: 1 }
-    ], 780, 'cubic-bezier(.22,.72,.18,1)').finally(() => flyingCart.remove());
-}
-
 function updatePuck(cartridge) {
     puckVisual.className = `cartridge cart-${cartridge.shell}`;
     puckSticker.className = `sticker sticker-${cartridge.theme}`;
@@ -457,15 +395,20 @@ function updatePuck(cartridge) {
 }
 
 async function runInsertionAnimation(cartridge, rackCart, sequence) {
-    const departure = animateCartridgeDeparture(rackCart);
+    const reducedMotion = prefersReducedMotion.matches;
+    const departure = animateCartridgeDeparture(rackCart, reducedMotion);
+    const zoomDuration = getMotionDuration('--motion-world-zoom', 720);
+    const zoom = waitForTransition(world, 'transform', zoomDuration, reducedMotion);
     world.classList.add('zoom-active');
 
-    await waitForMotion(230);
+    await waitForMotion(getMotionDuration('--motion-insert-stagger', 110), reducedMotion);
     if (sequence !== animationSequence || !isInserted) return;
     void animPuck.offsetWidth;
+    const puckDuration = getMotionDuration('--motion-puck-slide', 520);
+    const puck = waitForTransition(animPuck, 'top', puckDuration, reducedMotion);
     animPuck.classList.add('inserting');
 
-    await Promise.all([departure, waitForMotion(550)]);
+    await Promise.all([departure, zoom, puck]);
     if (sequence !== animationSequence || !isInserted) return;
 
     document.body.classList.add('interface-active');
@@ -602,36 +545,6 @@ function confirmAction() {
     else if (screenState.view === 'detail') selectAction();
 }
 
-async function animateCartridgeReturn(rackCart) {
-    const target = rackCart.getBoundingClientRect();
-    const side = getRackSide(rackCart);
-    // El cartucho entra desde fuera del borde de su propio lado.
-    const startX = side === 'left'
-        ? -target.width - 28
-        : window.innerWidth + 28;
-    const start = {
-        left: startX,
-        top: target.top,
-        width: target.width,
-        height: target.height
-    };
-    const flyingCart = createFlightClone(rackCart, start, { opacity: '0' });
-    if (prefersReducedMotion.matches) {
-        flyingCart.remove();
-        return;
-    }
-    // La opacidad llega a 1 pronto (al entrar en cuadro) y el último tramo
-    // es puro asentamiento de giro y escala hasta encajar en el riel.
-    const travel = target.left - startX;
-    const lean = side === 'left' ? 1 : -1;
-    await animateElement(flyingCart, [
-        { transform: `translate3d(0, 0, 0) rotate(${lean * 8}deg) scale(.9)`, opacity: 0, offset: 0 },
-        { transform: `translate3d(${Math.round(travel * 0.34)}px, 4px, 0) rotate(${lean * 2}deg) scale(.97)`, opacity: 1, offset: 0.36 },
-        { transform: `translate3d(${travel}px, 0, 0) rotate(0deg) scale(1)`, opacity: 1, offset: 1 }
-    ], 760, 'cubic-bezier(.22,.72,.18,1)');
-    flyingCart.remove();
-}
-
 async function triggerEjection() {
     if (!isInserted || isEjecting) return;
     isEjecting = true;
@@ -641,55 +554,36 @@ async function triggerEjection() {
     const sequence = ++animationSequence;
     playEjectSound();
 
-    // 1) La LCD se apaga y un clon fijo (independiente del zoom del escenario)
-    // sale disparado desde la ranura hacia el lado de su riel; el puck
-    // original queda oculto para que no se vea un cartucho fantasma duplicado.
+    // La animación de salida recorre en reversa la entrada: el cartucho sube
+    // desde la ranura mientras la consola recupera su tamaño de portada.
     viewport.classList.remove('active');
     document.body.classList.remove('interface-active');
     isInserted = false;
     currentCartId = null;
     screenState = { view: 'home', itemIndex: 0, detailMode: 'summary' };
 
-    let exitFlight = Promise.resolve();
-    if (!prefersReducedMotion.matches && puckVisual.isConnected) {
-        // El cartucho salta fuera de la ranura y sale hacia el lado de su riel.
-        const side = getRackSide(rackCart);
-        const dir = side === 'left' ? -1 : 1;
-        const exitX = dir * (window.innerWidth + 100);
-        const flyingCart = createFlightClone(puckVisual, puckVisual.getBoundingClientRect());
-        puckVisual.style.visibility = 'hidden';
-        exitFlight = animateElement(flyingCart, [
-            { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0 },
-            { transform: `translate3d(${Math.round(exitX * 0.18)}px, -18px, 0) scale(.98)`, opacity: 1, offset: 0.28 },
-            { transform: `translate3d(${exitX}px, -8px, 0) scale(.92)`, opacity: 0, offset: 1 }
-        ], 560, 'cubic-bezier(.22,.72,.18,1)').finally(() => flyingCart.remove());
-    }
-
-    await exitFlight;
-    if (sequence !== animationSequence) return;
-
-    // 2) El puck real vuelve a su posición de reposo sin transición (oculto,
-    // fuera de cuadro) y arranca el zoom de salida.
-    animPuck.style.transition = 'none';
-    animPuck.classList.remove('inserting');
-    void animPuck.offsetWidth;
-    animPuck.style.transition = '';
-    puckVisual.style.visibility = '';
+    const reducedMotion = prefersReducedMotion.matches;
+    const screenDuration = getMotionDuration('--motion-screen-fade', 220);
+    const screenFade = waitForTransition(viewport, 'opacity', screenDuration, reducedMotion);
+    const zoomDuration = getMotionDuration('--motion-world-zoom', 720);
+    const zoom = waitForTransition(world, 'transform', zoomDuration, reducedMotion);
+    const exitFlight = animateCartridgeEjection(puckVisual, reducedMotion);
     world.classList.remove('zoom-active');
     canvas.classList.add('fade-out');
 
-    // 3) Cuando el desvanecimiento de la LCD termina, se reemplaza el
-    // contenido por la portada sin que se vea (pantalla "apagada").
-    await waitForMotion(260);
+    await Promise.all([exitFlight, screenFade, zoom]);
     if (sequence !== animationSequence) return;
-    renderScreen({ visible: false });
 
-    // 4) El zoom ha terminado: la portada aparece de nuevo con la consola ya
-    // en su tamaño de reposo, mientras el cartucho vuelve al riel.
-    await waitForMotion(540);
-    if (sequence !== animationSequence) return;
+    // Restablece el cartucho oculto encima del cuerpo y prepara la portada
+    // antes de devolver su copia visual desde abajo hacia el riel.
+    animPuck.classList.add('motion-reset');
+    animPuck.classList.remove('inserting');
+    void animPuck.offsetWidth;
+    animPuck.classList.remove('motion-reset');
+    puckVisual.style.visibility = '';
+    renderScreen({ visible: false });
     viewport.classList.add('active');
-    if (rackCart && !prefersReducedMotion.matches) await animateCartridgeReturn(rackCart);
+    if (rackCart) await animateCartridgeReturn(rackCart, reducedMotion);
     if (sequence !== animationSequence) return;
 
     rackCart?.classList.remove('hidden-in-rack');

@@ -37,7 +37,9 @@ En pantallas amplias, las tarjetas se seleccionan desde los rieles laterales; en
 - `assets/profile/daniel-lcd-hero-v2.png` es la ilustración pixel art panorámica que llena la LCD en la pantalla de bienvenida; el nombre y el rol se superponen como texto accesible.
 - `index.html` define la consola, la pantalla LCD y los controles accesibles.
 - `style.css` define la carcasa, la composición cuadrada, las tarjetas y las vistas internas de la pantalla.
-- `script.js` controla la navegación, animaciones, sonido y entrada por toque, mouse, controles y teclado.
+- `motion.css` concentra las duraciones y curvas de las transiciones para ajustar el ritmo sin buscar valores repartidos por las reglas visuales.
+- `script.js` controla la navegación, el contenido, el sonido y la entrada por toque, mouse, controles y teclado.
+- `animations.js` reúne el movimiento de inserción, expulsión y regreso de los cartuchos. La tarjeta sale hacia abajo al insertarla; el movimiento se invierte al expulsarla. Las transiciones se sincronizan con `transitionend` y tienen un límite de respaldo.
 
 ## Verificación
 
@@ -49,7 +51,7 @@ La comprobación valida sintaxis JavaScript; las memorias y miniaturas enlazadas
 
 ## Despliegue en GitHub Pages
 
-1. Haz push de los cambios a la rama `main` del repositorio `danielunibe/gameboy-portfolio` (la raíz del repo debe ser la raíz del sitio: `index.html`, `style.css`, `script.js`, `projects.js`, `favicon.svg`, `assets/`).
+1. Haz push de los cambios a la rama `main` del repositorio `danielunibe/gameboy-portfolio` (la raíz del repo debe ser la raíz del sitio: `index.html`, `style.css`, `motion.css`, `script.js`, `animations.js`, `projects.js`, `translations.js`, `favicon.svg`, `assets/`).
 2. La acción `.github/workflows/pages.yml` se ejecuta automáticamente con cada push a `main`: copia los archivos estáticos a `_site` y despliega con `actions/deploy-pages`.
 3. Configuración única del repositorio: **Settings → Pages → Source: GitHub Actions**.
 4. El sitio queda publicado en https://danielunibe.github.io/gameboy-portfolio/. También puedes lanzar el workflow manualmente desde **Actions → Publish portfolio to GitHub Pages → Run workflow**.
