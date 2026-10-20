@@ -116,7 +116,7 @@ export const uiCopy = {
 export const englishCartridges = {
   perfil: {
     label: 'PROFILE',
-    title: 'Daniel Unibe',
+    title: 'Professional profile',
     kicker: 'PRODUCT DESIGNER · UX/UI',
     summary: 'I design complex digital products, turning user and operational needs into clear flows, interaction rules, and functional prototypes.',
     menuTitle: 'My approach',

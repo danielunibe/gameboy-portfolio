@@ -12,7 +12,7 @@ export const cartridges = [
     id: 0,
     key: 'perfil',
     label: 'PERFIL',
-    title: 'Daniel Unibe',
+    title: 'Perfil profesional',
     kicker: 'PRODUCT DESIGNER · UX/UI',
     shell: 'red',
     theme: 'profile',

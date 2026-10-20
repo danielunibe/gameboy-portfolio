@@ -194,9 +194,16 @@ function renderMenu(cartridge) {
     const options = cartridge.items.map((item, index) => `
         <button class="menu-option${index === screenState.itemIndex ? ' is-selected' : ''}" type="button"
             data-action="open-item" data-item-index="${index}" aria-current="${index === screenState.itemIndex ? 'true' : 'false'}"
-            aria-label="${escapeHTML(copy('openItem'))}: ${escapeHTML(item.title)}">
-            <span class="menu-option-copy"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.summary)}</small></span>
-            <span class="menu-chevron" aria-hidden="true">›</span>
+            aria-label="${escapeHTML(copy('openItem'))}: ${escapeHTML(item.title)}. ${escapeHTML(item.summary)}">
+            <span class="menu-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+            <span class="menu-option-copy">
+                <span class="menu-option-heading">
+                    <strong>${escapeHTML(item.title)}</strong>
+                    <span class="menu-option-meta" title="${escapeHTML(item.period || item.status || '')}">${escapeHTML(item.period || item.status || '')}</span>
+                </span>
+                <small>${escapeHTML(item.summary)}</small>
+            </span>
+            <span class="menu-option-cta" aria-hidden="true">↗</span>
         </button>
     `).join('');
 
@@ -224,20 +231,23 @@ function renderDetail(cartridge, item) {
                 ${!item.context && !item.responsibility ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('journey'))}</p><p>${escapeHTML(item.status || copy('evidenceFallback'))}</p></section>` : ''}
             </div>`;
     const hasEvidence = (item.evidence || []).length > 0 || links.length > 0;
+    const evidenceAction = hasEvidence
+        ? `<button class="screen-text-action" type="button" data-action="toggle-evidence">${escapeHTML(evidenceMode ? copy('showSummary') : copy('exploreEvidence'))} <span aria-hidden="true">↗</span></button>`
+        : '';
 
     return `
         <div class="screen-shell screen-detail">
             <div class="detail-topline">
                 <button class="screen-back" type="button" data-action="back-menu" aria-label="${escapeHTML(copy('backToList', { label: cartridge.label }))}"><span aria-hidden="true">←</span></button>
+                <p class="screen-kicker">${escapeHTML(item.period || cartridge.label)}</p>
+                ${evidenceAction}
             </div>
             <div class="detail-scroll-area">
-                <p class="screen-kicker">${escapeHTML(item.period || cartridge.kicker)}</p>
                 <h1>${escapeHTML(item.title)}</h1>
                 <p class="detail-summary">${escapeHTML(item.summary)}</p>
                 ${body}
                 ${!evidenceMode && item.status ? `<p class="status-chip">${escapeHTML(item.status)}</p>` : ''}
             </div>
-            ${hasEvidence ? `<div class="detail-actions"><button class="screen-text-action" type="button" data-action="toggle-evidence">${escapeHTML(evidenceMode ? copy('showSummary') : copy('exploreEvidence'))} <span aria-hidden="true">↗</span></button></div>` : ''}
         </div>
     `;
 }
