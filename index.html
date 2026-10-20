@@ -10,8 +10,9 @@
 </head>
 <body>
     <div id="ui-layer">
+        <button id="language-toggle" class="language-toggle" type="button" data-control="language" aria-label="Cambiar idioma a inglés" aria-pressed="false" title="Cambiar idioma a inglés">EN</button>
         <button id="return-btn" type="button" data-control="eject" aria-label="Expulsar cartucho y volver al inicio" disabled>
-            <span class="eject-icon" aria-hidden="true">↑</span> EJECT / INICIO
+            <span class="eject-icon" aria-hidden="true">↑</span> <span id="eject-label">EJECT / INICIO</span>
         </button>
     </div>
 
@@ -19,6 +20,7 @@
         <div class="center-stage">
             <div class="cartridge-puck-container" id="animPuck" aria-hidden="true">
                 <div class="cartridge cart-bone" id="activeCartridgeVisual">
+                    <span class="cartridge-grooves" aria-hidden="true"><i></i><i></i></span>
                     <div class="sticker" id="activeStickerVisual"></div>
                 </div>
             </div>
@@ -56,14 +58,23 @@
                                         <stop offset="0.55" stop-color="#090a0a" stop-opacity="0.02"/>
                                         <stop offset="1" stop-color="#090a0a" stop-opacity="0.18"/>
                                     </radialGradient>
+                                    <linearGradient id="dpad-arrow-inset" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0" stop-color="#151817"/>
+                                        <stop offset="0.62" stop-color="#222624"/>
+                                        <stop offset="1" stop-color="#3c413e"/>
+                                    </linearGradient>
                                 </defs>
                                 <path class="dpad-face" d="M39 2 Q34 2 34 7 V27 Q34 34 27 34 H7 Q2 34 2 39 V61 Q2 66 7 66 H27 Q34 66 34 73 V93 Q34 98 39 98 H61 Q66 98 66 93 V73 Q66 66 73 66 H93 Q98 66 98 61 V39 Q98 34 93 34 H73 Q66 34 66 27 V7 Q66 2 61 2 Z" fill="url(#dpad-face)" stroke="#171918" stroke-width="1.5" stroke-linejoin="round"/>
                                 <path d="M39 4 Q36 4 36 8 V27 Q36 35 28 36 H8 Q4 36 4 40" fill="none" stroke="url(#dpad-bevel)" stroke-width="1.25" stroke-linecap="round"/>
-                                <g class="dpad-arrows" fill="#171918" stroke="#69706b" stroke-opacity="0.48" stroke-width="1" stroke-linejoin="round">
-                                    <path d="M50 11 57 21H43Z"/>
-                                    <path d="M50 89 43 79H57Z"/>
-                                    <path d="M11 50 21 43V57Z"/>
-                                    <path d="M89 50 79 57V43Z"/>
+                                <g class="dpad-arrows" fill="url(#dpad-arrow-inset)" stroke="#121513" stroke-opacity="0.72" stroke-width="0.85" stroke-linejoin="round">
+                                    <path d="M50 11 58 21Q59 23 56 23H44Q41 23 42 21Z"/>
+                                    <path d="M50 89 42 79Q41 77 44 77H56Q59 77 58 79Z"/>
+                                    <path d="M11 50 21 42Q23 41 23 44V56Q23 59 21 58Z"/>
+                                    <path d="M89 50 79 42Q77 41 77 44V56Q77 59 79 58Z"/>
+                                </g>
+                                <g class="dpad-arrow-rims" fill="none" stroke="#919b94" stroke-opacity="0.34" stroke-width="0.9" stroke-linecap="round">
+                                    <path d="M44 21H56"/><path d="M44 79H56"/>
+                                    <path d="M21 44V56"/><path d="M79 44V56"/>
                                 </g>
                                 <circle cx="50" cy="50" r="13" fill="url(#dpad-center)"/>
                             </svg>

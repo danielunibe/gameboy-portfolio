@@ -1,0 +1,279 @@
+export const uiCopy = {
+  es: {
+    pageTitle: 'Daniel Unibe — Product Designer',
+    pageDescription: 'Portafolio interactivo de Daniel Unibe: diseño de producto, proyectos, experiencia y método de trabajo.',
+    languageToggle: 'EN',
+    languageButton: 'Cambiar idioma a inglés',
+    languageChanged: 'Idioma cambiado a español.',
+    ejectLabel: 'EJECT / INICIO',
+    ejectButton: 'Expulsar cartucho y volver al inicio',
+    racksLabel: 'Cartuchos del portafolio',
+    leftRackLabel: 'Perfil y trabajo',
+    rightRackLabel: 'Experiencia y método',
+    insertCartridge: 'Abrir cartucho',
+    socialLabel: 'Perfiles y portafolios profesionales',
+    findMe: 'ENCUÉNTRAME',
+    openSocial: 'Abrir {label} de Daniel Unibe',
+    homeLabel: 'Inicio del portafolio interactivo',
+    homeImageAlt: 'Daniel Unibe de cuerpo completo con un control de videojuegos, en un pasillo amarillo pixel art.',
+    homeKicker: 'PRODUCT DESIGNER · UX/UI',
+    homeTitle: 'Daniel Unibe',
+    openItem: 'Abrir ficha',
+    menuLabel: 'Contenido de {label}',
+    detailLabel: 'Detalle: {title}',
+    backToList: 'Volver al contenido de {label}',
+    context: 'CONTEXTO',
+    contribution: 'APORTACIÓN',
+    journey: 'RECORRIDO',
+    evidenceAndStatus: 'EVIDENCIA Y ESTADO',
+    evidenceFallback: 'No hay evidencia adicional publicada para esta ficha.',
+    statusFallback: 'Estado no especificado',
+    exploreEvidence: 'Ver evidencia',
+    showSummary: 'Ver resumen',
+    screenAlt: 'Pantalla interactiva del portafolio',
+    controlGroup: 'Controles de navegación',
+    controlUp: 'Mover arriba',
+    controlDown: 'Mover abajo',
+    controlLeft: 'Mover a la izquierda',
+    controlRight: 'Mover a la derecha',
+    controlBack: 'Botón B, volver',
+    controlConfirm: 'Botón A, abrir o confirmar',
+    controlSelect: 'SELECT, alternar resumen y evidencia',
+    controlStart: 'START, volver al menú',
+    loaded: '{label} listo.',
+    selected: 'Cartucho seleccionado: {label}.',
+    itemSelected: '{title}, {current} de {total}.',
+    itemOpened: 'Detalle de {title}.',
+    listOpened: 'Contenido del cartucho.',
+    homeOpened: 'Inicio del cartucho.',
+    homeReady: 'Inicio. El cartucho sigue insertado; usa EJECT para elegir otro.',
+    alreadyHome: 'Ya estás en el inicio. Usa EJECT para cambiar de cartucho.',
+    noAlternative: 'No hay una vista alternativa para esta ficha.',
+    evidenceView: 'Vista de evidencia.',
+    summaryView: 'Vista de resumen.',
+    ejected: 'Cartucho expulsado. Elige otro.',
+    bootTitle: 'CARGANDO',
+    bootLine: 'PREPARANDO LA EXPERIENCIA'
+  },
+  en: {
+    pageTitle: 'Daniel Unibe — Product Designer',
+    pageDescription: 'Daniel Unibe’s interactive portfolio: product design, projects, experience, and working approach.',
+    languageToggle: 'ES',
+    languageButton: 'Switch language to Spanish',
+    languageChanged: 'Language changed to English.',
+    ejectLabel: 'EJECT / HOME',
+    ejectButton: 'Eject cartridge and return home',
+    racksLabel: 'Portfolio cartridges',
+    leftRackLabel: 'Profile and work',
+    rightRackLabel: 'Experience and approach',
+    insertCartridge: 'Open cartridge',
+    socialLabel: 'Professional profiles and portfolios',
+    findMe: 'FIND ME',
+    openSocial: 'Open Daniel Unibe’s {label}',
+    homeLabel: 'Interactive portfolio home',
+    homeImageAlt: 'Full-body pixel-art illustration of Daniel Unibe holding a game controller in a yellow corridor.',
+    homeKicker: 'PRODUCT DESIGNER · UX/UI',
+    homeTitle: 'Daniel Unibe',
+    openItem: 'Open case',
+    menuLabel: '{label} content',
+    detailLabel: 'Details: {title}',
+    backToList: 'Return to {label} content',
+    context: 'CONTEXT',
+    contribution: 'CONTRIBUTION',
+    journey: 'OVERVIEW',
+    evidenceAndStatus: 'EVIDENCE & STATUS',
+    evidenceFallback: 'No additional evidence is published for this entry.',
+    statusFallback: 'Status not specified',
+    exploreEvidence: 'View evidence',
+    showSummary: 'View summary',
+    screenAlt: 'Interactive portfolio screen',
+    controlGroup: 'Navigation controls',
+    controlUp: 'Move up',
+    controlDown: 'Move down',
+    controlLeft: 'Move left',
+    controlRight: 'Move right',
+    controlBack: 'B button, go back',
+    controlConfirm: 'A button, open or confirm',
+    controlSelect: 'SELECT, toggle summary and evidence',
+    controlStart: 'START, return to the menu',
+    loaded: '{label} ready.',
+    selected: 'Selected cartridge: {label}.',
+    itemSelected: '{title}, {current} of {total}.',
+    itemOpened: 'Details for {title}.',
+    listOpened: 'Cartridge content.',
+    homeOpened: 'Cartridge home.',
+    homeReady: 'Home. The cartridge is still inserted; use EJECT to choose another.',
+    alreadyHome: 'You are already at the cartridge home. Use EJECT to switch cartridges.',
+    noAlternative: 'There is no alternate view for this entry.',
+    evidenceView: 'Evidence view.',
+    summaryView: 'Summary view.',
+    ejected: 'Cartridge ejected. Choose another.',
+    bootTitle: 'LOADING',
+    bootLine: 'PREPARING YOUR EXPERIENCE'
+  }
+};
+
+export const englishCartridges = {
+  perfil: {
+    label: 'PROFILE',
+    title: 'Daniel Unibe',
+    kicker: 'PRODUCT DESIGNER · UX/UI',
+    summary: 'I design complex digital products, turning user and operational needs into clear flows, interaction rules, and functional prototypes.',
+    menuTitle: 'My approach',
+    items: [
+      {
+        title: 'Value proposition',
+        summary: 'I connect people’s needs with operational goals to shape clear, useful digital products.',
+        context: 'My background combines internal tools, state-government digital services, independent work, and products built from the ground up.',
+        responsibility: 'My primary role is Product Designer / UX/UI, focused on product definition, interaction systems, and prototyping.',
+        evidence: ['Nearly four years of experience with internal tools and state-government digital services.', 'Partnered with Development and Operations to turn needs into working solutions.'],
+        status: 'Professional profile based on my documented experience.'
+      },
+      {
+        title: 'Design approach',
+        summary: 'I make flows, states, and product decisions understandable before implementation.',
+        context: 'I work with requirements, information architecture, interaction, accessibility, and responsive behavior.',
+        responsibility: 'I use Figma and functional prototypes, turning to web tools and code when they help validate behavior.',
+        evidence: ['Human–AI Interaction informs my product-design practice.', 'AI is presented as a prototyping aid, not as a professional certification.'],
+        status: 'Product design and UX/UI are my primary focus.'
+      },
+      {
+        title: 'Education and background',
+        summary: 'Training in design and visual communication, with an applied interest in digital systems and interactive products.',
+        context: 'UNIAT: coursework completed; graduation process in progress.',
+        responsibility: 'Native Spanish; technical and audiovisual English, with professional conversation skills in development.',
+        evidence: ['A public resume link can be added when one is approved for sharing.'],
+        status: 'Education and language information from my current resume.'
+      }
+    ]
+  },
+  trabajo: {
+    label: 'WORK',
+    title: 'Projects and prototypes',
+    kicker: 'PRODUCTS · CASES · CODE',
+    summary: 'Independent projects, digital experiences, and prototypes with their availability and maturity clearly stated.',
+    menuTitle: 'Selected work',
+    intro: 'UNOVA is a project lab. Each case reflects its real status: public, private, or in progress.',
+    items: [
+      {
+        title: 'Pulsaria / PulsarIA',
+        summary: 'An independent product with a public repository and an evaluation release.',
+        context: 'The code is available to inspect directly on GitHub.',
+        responsibility: 'Independent product and design project.',
+        evidence: ['Public repository: danielunibe/PulsarIA.', 'Status: public evaluation release.'],
+        status: 'Public code · evaluation release',
+        links: [{ label: 'Open repository', url: 'https://github.com/danielunibe/PulsarIA' }]
+      },
+      {
+        title: 'vivo Promotor',
+        summary: 'A mobile experience for field promoters.',
+        context: 'The application is private and used in field work.',
+        responsibility: 'The case focuses on mobile UX/UI and the ongoing evolution of the tool.',
+        evidence: ['Private application in active field use.', 'Continuous iteration.'],
+        status: 'Private field use · no public demo'
+      },
+      {
+        title: 'VoyagerOS',
+        summary: 'A native desktop experience with an executable build.',
+        context: 'The project is being stabilized and validated.',
+        responsibility: 'Digital product prototype in development.',
+        evidence: ['A native executable build is available.', 'Stabilization and validation are in progress.'],
+        status: 'Stabilization and validation in progress'
+      },
+      {
+        title: 'Julia',
+        summary: 'A product prototype in development.',
+        context: 'Exploration is ongoing; a demo will be shared when a version is ready.',
+        responsibility: 'Independent project at the prototype stage.',
+        evidence: ['Current status: prototype in development.'],
+        status: 'In development · no public demo'
+      }
+    ]
+  },
+  experiencia: {
+    label: 'EXPERIENCE',
+    title: 'Professional experience',
+    kicker: 'JOURNEY · RESPONSIBILITIES · EVIDENCE',
+    summary: 'A look at the teams, services, and tools where I have applied digital design and systems analysis.',
+    menuTitle: 'Career path',
+    items: [
+      {
+        title: 'LUKTEC',
+        period: '2025 — August 2026',
+        summary: 'Designing digital workflows and tools around operational needs.',
+        context: 'I work with operational needs to shape solutions and product experiences.',
+        responsibility: 'UX/UI, workflow definition, and functional prototyping in collaboration with the teams involved.',
+        evidence: ['Analysis of operational needs.', 'Exploration of AI and automation.'],
+        status: 'Professional experience from my current resume.'
+      },
+      {
+        title: 'Jalisco Public Finance Secretariat',
+        period: '2021 — May 2025',
+        summary: 'Institutional experience in digital design, interactive innovation, and systems analysis.',
+        context: 'Roles included Digital Design and Interactive Innovation Specialist and Systems Analyst B.',
+        responsibility: 'Design and analysis for internal tools, services, and institutional processes.',
+        evidence: ['FirmaDesk: more than 900 records documented across five offices; the tool remained in use after I left.', 'Accessibility audits aligned with WCAG 2.1 AA: more than 15 critical issues documented.', 'Hacienda Hub and the taxpayer app were part of this work.'],
+        status: 'This is professional experience; the initiatives are presented within the role.'
+      },
+      {
+        title: 'Vitalfarma',
+        period: '2018–2019 and 2020–2021',
+        summary: 'Service and operations experience at a pharmacy-clinic franchise.',
+        context: 'The work covered service experience and operating protocols.',
+        responsibility: 'Contributed to the franchise identity and visual system.',
+        evidence: ['Operating protocols.', 'Pharmacy-clinic identity and visual system.'],
+        status: 'Employment periods from my current resume.'
+      }
+    ]
+  },
+  metodo: {
+    label: 'HOW I WORK',
+    title: 'How I work',
+    kicker: 'PRODUCT THINKING · UX/UI · PROTOTYPING',
+    summary: 'I take ownership of the design problem and connect context, scope, interaction rules, and prototypes so the team can evaluate the solution.',
+    menuTitle: 'My process',
+    intro: 'This sequence summarizes practices from my experience. I adapt it to the context; it is not presented as a certified methodology.',
+    items: [
+      {
+        title: '01 · Understand the context',
+        summary: 'Align user and operational needs with goals, constraints, and the people involved.',
+        context: 'Before designing, I identify who uses the product, what they need to solve, and what shapes the solution.',
+        responsibility: 'Listen, review available research, and make relevant assumptions explicit.',
+        evidence: ['Operational needs and requirements discussed with Development and Operations.'],
+        status: 'Starting point'
+      },
+      {
+        title: '02 · Define the problem and scope',
+        summary: 'Turn findings into a design problem and a scope the team can discuss.',
+        context: 'The definition organizes requirements, workflows, and information architecture.',
+        responsibility: 'Separate what needs to be solved now from what needs further validation.',
+        evidence: ['Requirements, information architecture, and flows are documented capabilities.'],
+        status: 'Product definition'
+      },
+      {
+        title: '03 · Design interaction rules',
+        summary: 'Clarify hierarchy, states, edge cases, responsive behavior, and accessibility.',
+        context: 'A flow describes product behavior, not just a sequence of screens.',
+        responsibility: 'Make product responses and the scenarios the design must cover visible.',
+        evidence: ['Documented work in interaction systems, responsive design, and accessibility.'],
+        status: 'Interaction system'
+      },
+      {
+        title: '04 · Prototype to test',
+        summary: 'Choose the right prototype fidelity to review structure, flow, and behavior.',
+        context: 'Figma supports interface exploration; web and code help validate functional prototypes when useful.',
+        responsibility: 'Work with Development and Operations to bring the design closer to implementation.',
+        evidence: ['Functional prototypes and web tools are among my documented practices.'],
+        status: 'Prototyping'
+      },
+      {
+        title: '05 · Iterate with evidence',
+        summary: 'Review available evidence and adjust the next decision.',
+        context: 'Evidence can be an artifact, a verifiable product state, or usage signals when available.',
+        responsibility: 'Separate what has been verified from what still needs validation.',
+        evidence: ['I do not add metrics, formal tests, or quantified outcomes without supporting evidence.'],
+        status: 'Continuous learning'
+      }
+    ]
+  }
+};

@@ -2,12 +2,12 @@
   "name": "gameboy-portfolio",
   "version": "0.1.0",
   "private": true,
-  "description": "Entorno local de portfolio con consola y cartuchos interactivos.",
+  "description": "Portfolio bilingüe de Product Designer con consola Game Boy Color interactiva.",
   "type": "module",
   "scripts": {
     "dev": "node --watch server.mjs",
     "start": "node server.mjs",
-    "check": "node --check script.js && node --check projects.js && node --check server.mjs"
+    "check": "node --check script.js && node --check projects.js && node --check translations.js && node --check server.mjs"
   },
   "engines": {
     "node": ">=20"

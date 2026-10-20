@@ -1,6 +1,6 @@
 # Daniel Unibe · Product Designer
 
-Portfolio interactivo en formato Game Boy Color para explorar el perfil, proyectos, experiencia y forma de trabajo de Daniel Unibe, Product Designer · UX/UI.
+Portfolio bilingüe en formato Game Boy Color para explorar el perfil, proyectos, experiencia y forma de trabajo de Daniel Unibe, Product Designer · UX/UI.
 
 **[Abrir el portfolio](https://danielunibe.github.io/gameboy-portfolio/)**
 
@@ -23,17 +23,18 @@ Abrir **http://127.0.0.1:4175**. Se necesita Node.js 20 o superior. No hay paque
 | Menú de cartucho | Toca una opción, usa ↑/↓ para seleccionarla y A/Enter para abrirla. |
 | Detalle | B/Escape vuelve al menú; ↑/↓ desplaza el contenido; SELECT alterna resumen y evidencia cuando hay evidencia disponible. |
 | Menú e inicio | START cambia entre el menú del cartucho y su pantalla de inicio; EJECT expulsa el cartucho y permite elegir otro. |
+| Idioma | El botón discreto de la esquina alterna español e inglés y conserva la preferencia en este navegador. |
 | Teclado | Z confirma, X vuelve, Espacio activa START y S activa SELECT. |
 
 En pantallas amplias, las tarjetas se seleccionan desde los rieles laterales; en móvil se agrupan en una fila compacta bajo la consola. Al insertar una SD, esta sale de su riel y entra desde arriba a la ranura. La interfaz respeta la preferencia del sistema para reducir movimiento.
 
 ## Contenido y visuales
 
-- `projects.js` es la fuente única de los cuatro cartuchos, sus fichas y los enlaces sociales públicos. Mantén los estados, responsabilidades, métricas y enlaces dentro de lo confirmado; no agregues una demo para un producto privado.
-- `assets/covers/*-voxel.webp` contiene portadas voxel de baja densidad visual, una por cartucho y con fondo sólido coordinado con su carcasa; las etiquetas quedan en una franja separada.
+- `projects.js` conserva el contenido fuente en español; `translations.js` contiene las cadenas de interfaz y el contenido en inglés. Mantén estados, responsabilidades, métricas y enlaces dentro de lo confirmado; no agregues una demo para un producto privado.
+- `assets/covers/*-voxel*` contiene portadas voxel de baja densidad visual, una por cartucho y con fondo sólido coordinado con su carcasa; las etiquetas quedan en una franja separada.
 - `assets/social/*-voxel.webp` contiene miniaturas voxel sencillas para los cuatro enlaces sociales; cada una usa un objeto distinto y ningún retrato.
 - `assets/covers/*.svg` conserva las portadas vectoriales originales.
-- `assets/profile/daniel-lcd-hero.png` es la ilustración panorámica que llena la LCD en la pantalla de bienvenida; el nombre y el rol se superponen como texto accesible.
+- `assets/profile/daniel-lcd-hero-v2.png` es la ilustración pixel art panorámica que llena la LCD en la pantalla de bienvenida; el nombre y el rol se superponen como texto accesible.
 - `index.html` define la consola, la pantalla LCD y los controles accesibles.
 - `style.css` define la carcasa, la composición cuadrada, las tarjetas y las vistas internas de la pantalla.
 - `script.js` controla la navegación, animaciones, sonido y entrada por toque, mouse, controles y teclado.

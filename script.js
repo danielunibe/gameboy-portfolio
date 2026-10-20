@@ -1,4 +1,5 @@
 import { cartridges, socialLinks } from './projects.js';
+import { englishCartridges, uiCopy } from './translations.js';
 
 const world = document.getElementById('world');
 const rack = document.getElementById('cartridge-racks');
@@ -8,13 +9,15 @@ const canvas = document.getElementById('bootCanvas');
 const context = canvas.getContext('2d');
 const announcer = document.getElementById('screen-announcer');
 const ejectButton = document.getElementById('return-btn');
+const ejectLabel = document.getElementById('eject-label');
+const languageToggle = document.getElementById('language-toggle');
 const animPuck = document.getElementById('animPuck');
 const puckVisual = document.getElementById('activeCartridgeVisual');
 const puckSticker = document.getElementById('activeStickerVisual');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const themeColors = {
-    profile: { accent: '#9b7750', ink: '#37372f', paper: '#f5f0df' },
+    profile: { accent: '#bf3e36', ink: '#3a1d1c', paper: '#fff0e6' },
     work: { accent: '#138a78', ink: '#153a36', paper: '#e9f5ee' },
     experience: { accent: '#8065a0', ink: '#30283d', paper: '#f0eaf5' },
     method: { accent: '#71844d', ink: '#313a2b', paper: '#eef0df' }
@@ -25,6 +28,10 @@ let isEjecting = false;
 let currentCartId = null;
 let selectedCartId = cartridges[0]?.id ?? null;
 let screenState = { view: 'home', itemIndex: 0, detailMode: 'summary' };
+let currentLanguage = (() => {
+    try { return localStorage.getItem('portfolio-language') === 'en' ? 'en' : 'es'; }
+    catch { return 'es'; }
+})();
 let animationSequence = 0;
 let bootFrame = null;
 let lastHoverTime = 0;
@@ -77,7 +84,21 @@ function playEjectSound() {
 }
 
 function getCartridge(id) {
-    return cartridges.find((cartridge) => String(cartridge.id) === String(id));
+    const cartridge = cartridges.find((entry) => String(entry.id) === String(id));
+    if (!cartridge || currentLanguage !== 'en') return cartridge;
+    const translation = englishCartridges[cartridge.key];
+    if (!translation) return cartridge;
+    return {
+        ...cartridge,
+        ...translation,
+        items: cartridge.items.map((item, index) => ({ ...item, ...(translation.items?.[index] || {}) }))
+    };
+}
+
+function copy(key, values = {}) {
+    let value = uiCopy[currentLanguage]?.[key] ?? uiCopy.es[key] ?? key;
+    for (const [name, replacement] of Object.entries(values)) value = value.replaceAll(`{${name}}`, String(replacement));
+    return value;
 }
 
 function escapeHTML(value = '') {
@@ -104,27 +125,31 @@ function renderLinks(links = []) {
 }
 
 function renderRack() {
-    const renderCartridge = (cartridge) => `
+    const renderCartridge = (entry) => {
+        const cartridge = getCartridge(entry.id);
+        return `
         <button class="cartridge cart-${escapeHTML(cartridge.shell)}" id="rack-cart-${cartridge.id}" type="button"
-            data-cartridge-id="${cartridge.id}" aria-label="Insertar SD ${escapeHTML(cartridge.label)}"
+            data-cartridge-id="${cartridge.id}" aria-label="${escapeHTML(copy('insertCartridge'))} ${escapeHTML(cartridge.label)}"
             aria-pressed="${String(cartridge.id) === String(selectedCartId)}">
+            <span class="cartridge-grooves" aria-hidden="true"><i></i><i></i></span>
             <span class="sticker sticker-${escapeHTML(cartridge.theme)}">
                 <img class="cover-art" src="${escapeHTML(cartridge.cover)}" alt="" draggable="false">
                 <span class="sticker-label">${escapeHTML(cartridge.label)}</span>
             </span>
         </button>
     `;
+    };
     rack.querySelector('#rack-left').innerHTML = cartridges.slice(0, 2).map(renderCartridge).join('');
     rack.querySelector('#rack-right').innerHTML = cartridges.slice(2).map(renderCartridge).join('');
 }
 
 function renderSocialLinks() {
     socialLinksElement.innerHTML = `
-        <span class="social-caption">ENCUÉNTRAME</span>
+        <span class="social-caption">${escapeHTML(copy('findMe'))}</span>
         ${socialLinks.map(({ label, mark, network, art, url }) => {
             const safeURL = safeExternalURL(url);
             if (!safeURL) return '';
-            return `<a class="social-link" data-network="${escapeHTML(network)}" href="${escapeHTML(safeURL)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir ${escapeHTML(label)} de Daniel Unibe">
+            return `<a class="social-link" data-network="${escapeHTML(network)}" href="${escapeHTML(safeURL)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHTML(copy('openSocial', { label }))}">
                 <img class="social-art" src="${escapeHTML(art)}" alt="" loading="lazy" draggable="false">
                 <span class="social-link-label"><span class="social-mark" aria-hidden="true">${escapeHTML(mark)}</span>${escapeHTML(label)}<span class="social-arrow" aria-hidden="true">↗</span></span>
             </a>`;
@@ -144,20 +169,14 @@ function updateSelectedCartridge(id, focus = false) {
 }
 
 function renderHome() {
-    const loadedState = isInserted;
-    const action = loadedState
-        ? '<button class="screen-action" type="button" data-action="open-menu">ABRIR PORTAFOLIO <span aria-hidden="true">↗</span></button>'
-        : '<button class="screen-action" type="button" data-action="insert-selected">INSERTAR SD <span aria-hidden="true">↗</span></button>';
-
     return `
         <div class="screen-shell screen-home">
             <div class="home-screen-art">
-                <img src="assets/profile/daniel-lcd-hero.png" alt="Retrato ilustrado de Daniel Unibe" draggable="false">
+                <img src="assets/profile/daniel-lcd-hero-v2.png" alt="${escapeHTML(copy('homeImageAlt'))}" draggable="false">
             </div>
             <div class="home-copy">
-                <p class="screen-kicker">DANIEL UNIBE <span aria-hidden="true">·</span> UX/UI</p>
-                <h1>Product Designer</h1>
-                ${action}
+                <p class="screen-kicker">${escapeHTML(copy('homeKicker'))}</p>
+                <h1>${escapeHTML(copy('homeTitle'))}</h1>
             </div>
         </div>
     `;
@@ -166,8 +185,8 @@ function renderHome() {
 function renderMenu(cartridge) {
     const options = cartridge.items.map((item, index) => `
         <button class="menu-option${index === screenState.itemIndex ? ' is-selected' : ''}" type="button"
-            data-action="open-item" data-item-index="${index}" aria-current="${index === screenState.itemIndex ? 'true' : 'false'}">
-            <span class="menu-index">${String(index + 1).padStart(2, '0')}</span>
+            data-action="open-item" data-item-index="${index}" aria-current="${index === screenState.itemIndex ? 'true' : 'false'}"
+            aria-label="${escapeHTML(copy('openItem'))}: ${escapeHTML(item.title)}">
             <span class="menu-option-copy"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.summary)}</small></span>
             <span class="menu-chevron" aria-hidden="true">›</span>
         </button>
@@ -175,17 +194,12 @@ function renderMenu(cartridge) {
 
     return `
         <div class="screen-shell screen-menu">
-            <div class="screen-topline">
-            <span>${escapeHTML(cartridge.label)} <i aria-hidden="true">/</i> MENÚ</span>
-                <span>${String(screenState.itemIndex + 1).padStart(2, '0')} / ${String(cartridge.items.length).padStart(2, '0')}</span>
-            </div>
             <header class="menu-heading">
                 <p class="screen-kicker">${escapeHTML(cartridge.menuTitle)}</p>
                 <h1>${escapeHTML(cartridge.title)}</h1>
                 <p>${escapeHTML(cartridge.intro || cartridge.summary)}</p>
             </header>
             <nav class="menu-list" aria-label="${escapeHTML(cartridge.menuTitle)}">${options}</nav>
-            <div class="screen-bottomline screen-controls-hint"><span>↑ ↓ ELEGIR · A ABRIR</span><span>START · CATEGORÍA</span></div>
         </div>
     `;
 }
@@ -195,20 +209,18 @@ function renderDetail(cartridge, item) {
     const evidence = (item.evidence || []).map((entry) => `<li>${escapeHTML(entry)}</li>`).join('');
     const links = renderLinks(item.links || []);
     const body = evidenceMode
-        ? `<section class="detail-panel evidence-panel"><p class="panel-label">EVIDENCIA Y ESTADO</p>${evidence ? `<ul class="evidence-list">${evidence}</ul>` : '<p>No hay evidencia adicional publicada para esta ficha.</p>'}<p class="status-chip">${escapeHTML(item.status || 'Estado no especificado')}</p>${links ? `<div class="screen-links">${links}</div>` : ''}</section>`
+        ? `<section class="detail-panel evidence-panel"><p class="panel-label">${escapeHTML(copy('evidenceAndStatus'))}</p>${evidence ? `<ul class="evidence-list">${evidence}</ul>` : `<p>${escapeHTML(copy('evidenceFallback'))}</p>`}<p class="status-chip">${escapeHTML(item.status || copy('statusFallback'))}</p>${links ? `<div class="screen-links">${links}</div>` : ''}</section>`
         : `<div class="detail-panels">
-                ${item.context ? `<section class="detail-panel"><p class="panel-label">CONTEXTO</p><p>${escapeHTML(item.context)}</p></section>` : ''}
-                ${item.responsibility ? `<section class="detail-panel"><p class="panel-label">APORTACIÓN</p><p>${escapeHTML(item.responsibility)}</p></section>` : ''}
-                ${!item.context && !item.responsibility ? `<section class="detail-panel"><p class="panel-label">RECORRIDO</p><p>${escapeHTML(item.status || 'Explora la evidencia de esta ficha.')}</p></section>` : ''}
+                ${item.context ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('context'))}</p><p>${escapeHTML(item.context)}</p></section>` : ''}
+                ${item.responsibility ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('contribution'))}</p><p>${escapeHTML(item.responsibility)}</p></section>` : ''}
+                ${!item.context && !item.responsibility ? `<section class="detail-panel"><p class="panel-label">${escapeHTML(copy('journey'))}</p><p>${escapeHTML(item.status || copy('evidenceFallback'))}</p></section>` : ''}
             </div>`;
     const hasEvidence = (item.evidence || []).length > 0 || links.length > 0;
-    const modeLabel = evidenceMode ? 'SELECT RESUMEN' : 'SELECT EVIDENCIA';
 
     return `
         <div class="screen-shell screen-detail">
-            <div class="screen-topline">
-                <button class="screen-back" type="button" data-action="back-menu" aria-label="Volver al menú ${escapeHTML(cartridge.label)}">← ${escapeHTML(cartridge.label)}</button>
-                <span>${String(screenState.itemIndex + 1).padStart(2, '0')} / ${String(cartridge.items.length).padStart(2, '0')}</span>
+            <div class="detail-topline">
+                <button class="screen-back" type="button" data-action="back-menu" aria-label="${escapeHTML(copy('backToList', { label: cartridge.label }))}"><span aria-hidden="true">←</span></button>
             </div>
             <div class="detail-scroll-area">
                 <p class="screen-kicker">${escapeHTML(item.period || cartridge.kicker)}</p>
@@ -217,10 +229,7 @@ function renderDetail(cartridge, item) {
                 ${body}
                 ${!evidenceMode && item.status ? `<p class="status-chip">${escapeHTML(item.status)}</p>` : ''}
             </div>
-            <div class="screen-bottomline screen-controls-hint">
-                <span>B MENÚ · START CATEGORÍA · EJECT INICIO</span>
-                ${hasEvidence ? `<button class="screen-text-action" type="button" data-action="toggle-evidence">${modeLabel}</button>` : '<span>USA B PARA REGRESAR</span>'}
-            </div>
+            ${hasEvidence ? `<div class="detail-actions"><button class="screen-text-action" type="button" data-action="toggle-evidence">${escapeHTML(evidenceMode ? copy('showSummary') : copy('exploreEvidence'))} <span aria-hidden="true">↗</span></button></div>` : ''}
         </div>
     `;
 }
@@ -233,19 +242,58 @@ function renderScreen({ visible = true } = {}) {
 
     if (screenState.view === 'menu' && isInserted) {
         viewport.innerHTML = renderMenu(cartridge);
-        viewport.setAttribute('aria-label', `Menú del cartucho ${cartridge.label}`);
+        viewport.setAttribute('aria-label', copy('menuLabel', { label: cartridge.label }));
     } else if (screenState.view === 'detail' && isInserted) {
         const item = cartridge.items[screenState.itemIndex];
         viewport.innerHTML = item ? renderDetail(cartridge, item) : renderMenu(cartridge);
-        viewport.setAttribute('aria-label', item ? `Detalle: ${item.title}` : `Menú del cartucho ${cartridge.label}`);
+        viewport.setAttribute('aria-label', item ? copy('detailLabel', { title: item.title }) : copy('menuLabel', { label: cartridge.label }));
     } else {
         viewport.innerHTML = renderHome();
         viewport.dataset.theme = cartridge.theme;
-        viewport.setAttribute('aria-label', 'Inicio del portafolio interactivo');
+        viewport.setAttribute('aria-label', copy('homeLabel'));
     }
 
     viewport.classList.toggle('active', visible);
     viewport.scrollTop = 0;
+}
+
+function updateLanguageInterface({ announceChange = false } = {}) {
+    document.documentElement.lang = currentLanguage;
+    document.title = copy('pageTitle');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', copy('pageDescription'));
+    languageToggle.textContent = copy('languageToggle');
+    languageToggle.setAttribute('aria-label', copy('languageButton'));
+    languageToggle.setAttribute('aria-pressed', String(currentLanguage === 'en'));
+    languageToggle.title = copy('languageButton');
+    ejectLabel.textContent = copy('ejectLabel');
+    ejectButton.setAttribute('aria-label', copy('ejectButton'));
+    document.querySelector('.console-body')?.setAttribute('aria-label', currentLanguage === 'en' ? 'Interactive handheld console' : 'Consola portátil interactiva');
+    document.querySelector('.controls-tight-group')?.setAttribute('aria-label', copy('controlGroup'));
+    rack.setAttribute('aria-label', copy('racksLabel'));
+    rack.querySelector('#rack-left')?.setAttribute('aria-label', copy('leftRackLabel'));
+    rack.querySelector('#rack-right')?.setAttribute('aria-label', copy('rightRackLabel'));
+    socialLinksElement.setAttribute('aria-label', copy('socialLabel'));
+
+    const controlLabels = {
+        up: 'controlUp', down: 'controlDown', left: 'controlLeft', right: 'controlRight',
+        back: 'controlBack', confirm: 'controlConfirm', select: 'controlSelect', start: 'controlStart'
+    };
+    for (const [control, labelKey] of Object.entries(controlLabels)) {
+        document.querySelector(`[data-control="${control}"]`)?.setAttribute('aria-label', copy(labelKey));
+    }
+
+    renderRack();
+    renderSocialLinks();
+    if (isInserted) updatePuck(getCartridge(currentCartId));
+    renderScreen();
+    if (announceChange) announce(copy('languageChanged'));
+}
+
+function toggleLanguage() {
+    currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
+    try { localStorage.setItem('portfolio-language', currentLanguage); }
+    catch { /* El selector sigue funcionando aunque el navegador no guarde preferencias. */ }
+    updateLanguageInterface({ announceChange: true });
 }
 
 function announce(message) {
@@ -274,7 +322,7 @@ function drawBootScreen(cartridge, progress) {
     context.textAlign = 'center';
     context.fillStyle = paper;
     context.font = '700 22px Arial, sans-serif';
-    context.fillText('CARGANDO CARTUCHO', width / 2, height / 2 - 38);
+    context.fillText(copy('bootTitle'), width / 2, height / 2 - 38);
     context.fillStyle = '#fff';
     context.font = '800 42px Arial, sans-serif';
     context.fillText(cartridge.label, width / 2, height / 2 + 18);
@@ -288,7 +336,7 @@ function drawBootScreen(cartridge, progress) {
     context.fillRect(barX, barY, barWidth * progress, 8);
     context.fillStyle = paper;
     context.font = '600 13px Arial, sans-serif';
-    context.fillText('PREPARANDO LA EXPERIENCIA', width / 2, barY + 34);
+    context.fillText(copy('bootLine'), width / 2, barY + 34);
 }
 
 function runBootSequence(cartridge, sequence) {
@@ -307,7 +355,7 @@ function runBootSequence(cartridge, sequence) {
             drawBootScreen(cartridge, 1);
             canvas.classList.add('fade-out');
             viewport.classList.add('active');
-            announce(`${cartridge.label} cargado. Usa las flechas para recorrer el menú.`);
+            announce(copy('loaded', { label: cartridge.label }));
             resolve();
         };
 
@@ -397,9 +445,9 @@ function animateCartridgeDeparture(rackCart) {
 
     return animateElement(flyingCart, [
         { transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)', opacity: 1, offset: 0 },
-        { transform: `translate3d(${Math.round(exitX * 0.6)}px, 10px, 0) rotate(${dir * 7}deg) scale(.97)`, opacity: 1, offset: 0.6 },
-        { transform: `translate3d(${exitX}px, 18px, 0) rotate(${dir * 13}deg) scale(.92)`, opacity: 0, offset: 1 }
-    ], 620).finally(() => flyingCart.remove());
+        { transform: `translate3d(${Math.round(exitX * 0.52)}px, 5px, 0) rotate(${dir * 3}deg) scale(.99)`, opacity: 1, offset: 0.58 },
+        { transform: `translate3d(${exitX}px, 12px, 0) rotate(${dir * 7}deg) scale(.96)`, opacity: 0, offset: 1 }
+    ], 780, 'cubic-bezier(.22,.72,.18,1)').finally(() => flyingCart.remove());
 }
 
 function updatePuck(cartridge) {
@@ -410,16 +458,14 @@ function updatePuck(cartridge) {
 
 async function runInsertionAnimation(cartridge, rackCart, sequence) {
     const departure = animateCartridgeDeparture(rackCart);
-    await waitForMotion(150);
-    if (sequence !== animationSequence || !isInserted) return;
     world.classList.add('zoom-active');
 
-    await waitForMotion(190);
+    await waitForMotion(230);
     if (sequence !== animationSequence || !isInserted) return;
     void animPuck.offsetWidth;
     animPuck.classList.add('inserting');
 
-    await Promise.all([departure, waitForMotion(620)]);
+    await Promise.all([departure, waitForMotion(550)]);
     if (sequence !== animationSequence || !isInserted) return;
 
     document.body.classList.add('interface-active');
@@ -453,7 +499,7 @@ function moveRackSelection(direction) {
     const delta = direction === 'right' ? 1 : -1;
     const nextIndex = (currentIndex + delta + cartridges.length) % cartridges.length;
     updateSelectedCartridge(cartridges[nextIndex].id, true);
-    announce(`Memoria seleccionada: ${cartridges[nextIndex].label}.`);
+    announce(copy('selected', { label: getCartridge(cartridges[nextIndex].id).label }));
 }
 
 function moveMenuSelection(direction) {
@@ -465,7 +511,11 @@ function moveMenuSelection(direction) {
     const activeOption = viewport.querySelector(`[data-action="open-item"][data-item-index="${screenState.itemIndex}"]`);
     activeOption?.focus({ preventScroll: true });
     activeOption?.scrollIntoView({ block: 'nearest' });
-    announce(`${cartridge.items[screenState.itemIndex].title}, ${screenState.itemIndex + 1} de ${cartridge.items.length}.`);
+    announce(copy('itemSelected', {
+        title: cartridge.items[screenState.itemIndex].title,
+        current: screenState.itemIndex + 1,
+        total: cartridge.items.length
+    }));
 }
 
 function scrollDetail(direction) {
@@ -480,7 +530,7 @@ function openItem(index = screenState.itemIndex) {
     screenState = { view: 'detail', itemIndex: index, detailMode: 'summary' };
     playSelect();
     renderScreen();
-    announce(`Detalle de ${cartridge.items[index].title}.`);
+    announce(copy('itemOpened', { title: cartridge.items[index].title }));
 }
 
 function backAction() {
@@ -489,16 +539,16 @@ function backAction() {
         screenState.view = 'menu';
         screenState.detailMode = 'summary';
         renderScreen();
-        announce('Menú del cartucho.');
+        announce(copy('listOpened'));
         return;
     }
     if (screenState.view === 'menu') {
         screenState.view = 'home';
         renderScreen();
-        announce('Inicio. El cartucho sigue insertado; usa EJECT para elegir otra memoria.');
+        announce(copy('homeReady'));
         return;
     }
-    announce('Ya estás en el inicio. Usa EJECT para cambiar de cartucho.');
+    announce(copy('alreadyHome'));
 }
 
 function startAction() {
@@ -511,30 +561,30 @@ function startAction() {
         screenState.view = 'menu';
         screenState.detailMode = 'summary';
         renderScreen();
-        announce('Menú del cartucho.');
+        announce(copy('listOpened'));
         return;
     }
     if (screenState.view === 'menu') {
         screenState.view = 'home';
         renderScreen();
-        announce('Inicio del cartucho.');
+        announce(copy('homeOpened'));
         return;
     }
     screenState.view = 'menu';
     renderScreen();
-    announce('Menú del cartucho.');
+    announce(copy('listOpened'));
 }
 
 function selectAction() {
     const cartridge = getCartridge(currentCartId);
     const item = cartridge?.items[screenState.itemIndex];
     if (!item || screenState.view !== 'detail' || !(item.evidence?.length || item.links?.length)) {
-        announce('No hay una vista alternativa para esta pantalla.');
+        announce(copy('noAlternative'));
         return;
     }
     screenState.detailMode = screenState.detailMode === 'summary' ? 'evidence' : 'summary';
     renderScreen();
-    announce(screenState.detailMode === 'evidence' ? 'Vista de evidencia.' : 'Vista de resumen.');
+    announce(screenState.detailMode === 'evidence' ? copy('evidenceView') : copy('summaryView'));
 }
 
 function confirmAction() {
@@ -576,9 +626,9 @@ async function animateCartridgeReturn(rackCart) {
     const lean = side === 'left' ? 1 : -1;
     await animateElement(flyingCart, [
         { transform: `translate3d(0, 0, 0) rotate(${lean * 8}deg) scale(.9)`, opacity: 0, offset: 0 },
-        { transform: `translate3d(${Math.round(travel * 0.3)}px, 6px, 0) rotate(${lean * 4}deg) scale(.95)`, opacity: 1, offset: 0.3 },
+        { transform: `translate3d(${Math.round(travel * 0.34)}px, 4px, 0) rotate(${lean * 2}deg) scale(.97)`, opacity: 1, offset: 0.36 },
         { transform: `translate3d(${travel}px, 0, 0) rotate(0deg) scale(1)`, opacity: 1, offset: 1 }
-    ], 600, 'cubic-bezier(.18,.72,.28,1)');
+    ], 760, 'cubic-bezier(.22,.72,.18,1)');
     flyingCart.remove();
 }
 
@@ -610,9 +660,9 @@ async function triggerEjection() {
         puckVisual.style.visibility = 'hidden';
         exitFlight = animateElement(flyingCart, [
             { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0 },
-            { transform: `translate3d(${Math.round(exitX * 0.15)}px, -42px, 0) scale(.95)`, opacity: 1, offset: 0.3 },
-            { transform: `translate3d(${exitX}px, -10px, 0) scale(.86)`, opacity: 0, offset: 1 }
-        ], 300).finally(() => flyingCart.remove());
+            { transform: `translate3d(${Math.round(exitX * 0.18)}px, -18px, 0) scale(.98)`, opacity: 1, offset: 0.28 },
+            { transform: `translate3d(${exitX}px, -8px, 0) scale(.92)`, opacity: 0, offset: 1 }
+        ], 560, 'cubic-bezier(.22,.72,.18,1)').finally(() => flyingCart.remove());
     }
 
     await exitFlight;
@@ -647,7 +697,7 @@ async function triggerEjection() {
     rack.removeAttribute('aria-hidden');
     isEjecting = false;
     updateSelectedCartridge(ejectedId);
-    announce('Cartucho expulsado. Elige otra memoria.');
+    announce(copy('ejected'));
     rackCart?.focus({ preventScroll: true });
 }
 
@@ -677,6 +727,9 @@ function handleControl(control) {
             break;
         case 'eject':
             void triggerEjection();
+            break;
+        case 'language':
+            toggleLanguage();
             break;
         default:
             break;
@@ -778,7 +831,5 @@ document.addEventListener('keydown', (event) => {
 
 canvas.width = 600;
 canvas.height = 400;
-renderRack();
-renderSocialLinks();
+updateLanguageInterface();
 canvas.classList.add('fade-out');
-renderScreen();

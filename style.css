@@ -104,7 +104,7 @@ body.interface-active #return-btn { opacity: 1; transform: translateY(0); pointe
 /* --- CONSOLA --- */
 .center-stage { position: relative; grid-column: 1 / -1; grid-row: 1; width: 400px; height: 560px; display: flex; justify-content: center; align-items: center; justify-self: center; transform: scale(var(--device-scale)); transform-origin: center center; }
 .cartridge-puck-container { position: absolute; top: -400px; left: 50%; width: 105px; margin-left: -52.5px; z-index: 0; pointer-events: none; transition: top 0.58s cubic-bezier(0.34, 1.4, 0.64, 1); }
-.cartridge-puck-container.inserting { top: -104px; }
+.cartridge-puck-container.inserting { top: -88px; }
 
 .console-body {
     width: 400px; height: 560px;
@@ -565,7 +565,7 @@ body { width: 100%; height: 100vh; height: 100svh; overflow: hidden; }
     .cart-rack .cartridge::before { border-radius: 5px 5px 10px 5px; }
     .sticker { border-radius: 4px 4px 7px 4px; }
     .sticker-label { font-size: 6px; padding: 3px 1px; }
-    .cartridge-puck-container.inserting { top: -101px; }
+    .cartridge-puck-container.inserting { top: -86px; }
 }
 @media (min-width: 900px) and (min-height: 900px) { .world-container { --active-zoom: 2.05; } }
 @media (min-width: 950px) and (min-height: 950px) { .world-container { --active-zoom: 1.95; } }
@@ -907,3 +907,235 @@ body { width: 100%; height: 100vh; height: 100svh; overflow: hidden; }
     .world-container.zoom-active { --active-zoom: 1.12; }
     .social-link-label { font-size: 7px; }
 }
+
+/* Pulido de portada: controles flotantes fuera de la LCD y cartuchos con más relieve. */
+#ui-layer {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    display: block;
+    pointer-events: none;
+}
+#return-btn {
+    position: absolute;
+    top: 15px;
+    right: clamp(14px, 3vw, 34px);
+    left: auto;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(39, 40, 37, .88);
+    box-shadow: 0 7px 20px rgba(42, 38, 30, .18), inset 0 1px 0 rgba(255,255,255,.16);
+    font-size: 10px;
+    letter-spacing: .08em;
+    transform: translateY(-9px);
+    pointer-events: none;
+}
+body.interface-active #return-btn { transform: translateY(0); }
+.language-toggle {
+    position: fixed;
+    top: 15px;
+    left: clamp(14px, 3vw, 34px);
+    z-index: 101;
+    min-width: 42px;
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    color: #4b4639;
+    font: 900 10px/1 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: .12em;
+    cursor: pointer;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 16px rgba(42,38,30,.13), inset 0 1px 0 rgba(255,255,255,.9);
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.language-toggle:hover { transform: translateY(-1px); background: rgba(255,255,255,.9); box-shadow: 0 7px 18px rgba(42,38,30,.16); }
+.language-toggle:focus-visible { outline: 2px solid #b94139; outline-offset: 3px; }
+
+@media (min-width: 681px) {
+    .world-container.zoom-active { translate: 0 clamp(155px, 24.5vh, 250px); }
+    .world-container.zoom-active .start-select-bar { position: relative; top: -42px; }
+}
+@media (max-width: 680px) {
+    #return-btn { top: 9px; right: 9px; padding: 7px 10px; font-size: 8px; }
+    .language-toggle { top: 9px; left: 9px; min-width: 36px; min-height: 30px; padding: 6px 9px; }
+    .world-container.zoom-active { translate: 0 10px; }
+}
+
+.cart-red { --cart-edge: #ffb4a7; --cart-contact: #842a2c; background: linear-gradient(145deg, #ed6556, #ad3038); }
+.cart-rack .cartridge {
+    box-shadow: 8px 12px 24px rgba(54, 43, 29, .25), inset 1px 2px 3px rgba(255,255,255,.72), inset 0 -4px 7px rgba(35,32,27,.1);
+}
+.cart-rack .cartridge:hover,
+.cart-rack .cartridge[aria-pressed="true"] {
+    box-shadow: 10px 15px 28px rgba(54, 43, 29, .29), 0 0 0 3px rgba(177,157,112,.16), inset 1px 2px 3px rgba(255,255,255,.72), inset 0 -4px 7px rgba(35,32,27,.1);
+}
+.cartridge-grooves {
+    position: absolute;
+    z-index: 2;
+    top: 5.3%;
+    left: 12%;
+    right: 12%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+.cartridge-grooves i {
+    display: block;
+    width: 22%;
+    height: clamp(2px, .48vmin, 4px);
+    border-radius: 999px;
+    background: rgba(62, 48, 31, .18);
+    box-shadow: inset 0 1px 2px rgba(35, 29, 22, .32), 0 1px 0 rgba(255,255,255,.62);
+}
+.sticker {
+    top: 10%;
+    left: 7%;
+    right: 7%;
+    bottom: 18%;
+    z-index: 1;
+}
+.cover-art {
+    object-position: center center;
+    transform: scale(1.16);
+    transition: transform .35s cubic-bezier(.2,.7,.25,1);
+}
+.cart-rack .cartridge:hover .cover-art,
+.cart-rack .cartridge[aria-pressed="true"] .cover-art { transform: scale(1.22); }
+.sticker-profile { background: #f90012; }
+.sticker-profile .sticker-label { background: #a72e31; color: #fff3dc; }
+.sticker-profile .cover-art { object-fit: contain; transform: scale(1.18); }
+.cart-rack .cartridge:hover .sticker-profile .cover-art,
+.cart-rack .cartridge[aria-pressed="true"] .sticker-profile .cover-art { transform: scale(1.26); }
+
+/* Los botones A/B tienen volumen de goma con sombras hacia dentro, sin proyectarlas en la carcasa. */
+.action-btn {
+    box-shadow: inset 2px 2px 3px rgba(255,255,255,.76), inset -3px -3px 6px rgba(27,29,27,.22), 0 1px 0 rgba(255,255,255,.38);
+    text-shadow: 0 1px 0 rgba(40,42,39,.24);
+}
+.action-btn:hover,
+.action-btn:focus { box-shadow: inset 2px 2px 3px rgba(255,255,255,.8), inset -3px -3px 6px rgba(27,29,27,.2), 0 1px 0 rgba(255,255,255,.42); }
+.action-btn:active { box-shadow: inset 3px 3px 7px rgba(0,0,0,.32), inset -1px -1px 2px rgba(255,255,255,.42); }
+.dpad-art { filter: drop-shadow(2px 4px 5px rgba(0,0,0,.22)); }
+.dpad-arrow-rims { pointer-events: none; }
+.start-select-bar { gap: 24px; margin-top: 7px; }
+.small-control { gap: 7px; }
+
+/* La bienvenida usa el espacio negativo de la ilustración; menús y fichas aprovechan toda la LCD. */
+.screen-home {
+    background: #f5bd12;
+}
+.screen-home::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 221, 68, .22) 0%, rgba(255, 221, 68, .08) 42%, transparent 64%);
+    pointer-events: none;
+}
+.home-screen-art img { object-position: center center; }
+.screen-home .home-copy {
+    top: 50%;
+    bottom: auto;
+    left: clamp(16px, 6cqw, 38px);
+    width: min(42%, 340px);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #302317;
+    box-shadow: none;
+    transform: translateY(-50%);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.screen-home .screen-kicker {
+    margin-bottom: 9px;
+    color: #a6322e;
+    font-size: clamp(9px, 2cqw, 13px);
+    line-height: 1.35;
+    letter-spacing: .15em;
+}
+.screen-home .home-copy h1 {
+    margin: 0;
+    color: #302317;
+    font-size: clamp(23px, 6.1cqw, 42px);
+    line-height: 1;
+    letter-spacing: -.055em;
+    text-shadow: 0 1px 0 rgba(255,245,201,.38);
+}
+.screen-menu {
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(11px, 2.4cqw, 17px);
+}
+.screen-menu .menu-heading h1 { font-size: clamp(25px, 6.2cqw, 42px); }
+.screen-menu .menu-heading > p:last-child { -webkit-line-clamp: 3; }
+.screen-menu .menu-list { padding: 2px 4px 5px 1px; }
+.screen-menu .menu-option {
+    grid-template-columns: minmax(0, 1fr) 18px;
+    min-height: clamp(58px, 12cqw, 78px);
+    padding: 12px 14px;
+}
+.screen-menu .menu-option-copy strong { font-size: clamp(13px, 3.1cqw, 17px); }
+.screen-menu .menu-option-copy small { font-size: clamp(10px, 2.25cqw, 13px); -webkit-line-clamp: 2; }
+.screen-detail { grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(5px, 1.4cqw, 10px); }
+.detail-topline { display: flex; align-items: center; min-height: 24px; }
+.screen-back {
+    display: inline-grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,.62);
+    color: var(--screen-accent);
+    font-size: 20px;
+}
+.screen-back:hover { background: #fff; }
+.detail-scroll-area { padding: 0 8px 16px 2px; }
+.detail-scroll-area h1 { font-size: clamp(25px, 6.2cqw, 40px); }
+.detail-panels { gap: clamp(10px, 2.4cqw, 18px); }
+.detail-panel { padding: 12px 0 14px; }
+.detail-actions { display: flex; justify-content: flex-end; padding-top: 8px; border-top: 1px solid rgba(75,79,67,.14); }
+.screen-text-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--screen-accent) 12%, white);
+    color: var(--screen-accent);
+    font-size: clamp(10px, 2.2cqw, 13px);
+}
+.screen-text-action span { font-size: 1.12em; }
+#project-viewport[data-theme="profile"] { --screen-accent: #bd3d36; }
+
+.social-caption {
+    font-size: clamp(10px, 1.35vmin, 12px);
+    letter-spacing: .23em;
+}
+.social-links { row-gap: 9px; }
+.social-link { box-shadow: inset 0 1px 0 rgba(255,255,255,.94), 0 5px 12px rgba(48,44,35,.14); }
+
+@container (max-width: 420px) {
+    .screen-home .home-copy { left: 5%; width: 49%; }
+    .screen-home .home-copy h1 { font-size: clamp(21px, 7.2cqw, 29px); }
+    .screen-menu .menu-option { min-height: 54px; padding: 9px 10px; }
+    .screen-detail .detail-scroll-area { padding-right: 4px; }
+}
+@media (max-width: 420px) {
+    .social-caption { letter-spacing: .18em; }
+    .cart-rack .cartridge:hover .cover-art,
+    .cart-rack .cartridge[aria-pressed="true"] .cover-art { transform: scale(1.1); }
+}
+
+/* Menú compacto para mostrar más opciones dentro de la LCD. */
+.screen-menu { gap: 7px; padding: 10px 14px 12px; }
+.screen-menu .menu-heading h1 { margin: .08em 0 .1em; font-size: clamp(22px, 5.4cqw, 34px); }
+.screen-menu .menu-heading > p:last-child { display: none; }
+.screen-menu .menu-list { padding: 0 4px 2px 1px; }
+.screen-menu .menu-option { min-height: clamp(42px, 11cqw, 48px); padding: 6px 10px; }
+.screen-menu .menu-option-copy strong { font-size: clamp(12px, 2.8cqw, 15px); }
+.screen-menu .menu-option-copy small { font-size: clamp(9px, 2.05cqw, 11px); line-height: 1.2; -webkit-line-clamp: 1; }

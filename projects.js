@@ -14,9 +14,9 @@ export const cartridges = [
     label: 'PERFIL',
     title: 'Daniel Unibe',
     kicker: 'PRODUCT DESIGNER · UX/UI',
-    shell: 'yellow',
+    shell: 'red',
     theme: 'profile',
-    cover: 'assets/covers/perfil-voxel.webp',
+    cover: 'assets/covers/perfil-voxel-red.png',
     summary: 'Diseño productos digitales complejos y convierto necesidades de usuarios y operación en flujos, reglas de interacción y prototipos funcionales.',
     menuTitle: 'Conoce mi enfoque',
     items: [
